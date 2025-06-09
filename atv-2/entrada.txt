@@ -1,0 +1,38 @@
+Carone
+1
+Jardim Camburi
+1
+Jardim da Penha
+2
+Jardim Camburi
+Leite Selita
+10
+200
+2
+Jardim Camburi
+Presunto
+50
+300
+2
+Jardim Camburi
+Queijo
+30
+200
+2
+Jardim da Penha
+Biscoito
+5
+2000
+2
+Jardim da Penha
+Presunto
+50
+3000
+2
+Jardim da Penha
+Picanha
+30
+50
+3
+7
+4
