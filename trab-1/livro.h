@@ -1,12 +1,24 @@
+// Feito dia 09/06/2025
+// Yuri Tressmann Mutz
+// Todos os direitos reservados
+
 #ifndef LIVRO_H
 #define LIVRO_H
 
+#include <stdio.h>
+
 typedef struct Livro Livro;
 
-Livro *criaLivro();
+Livro *criaLivro(int id, char *titulo, char *autor, char *genero, int ano);
 
-void liberaLivro(Livro *livro);
+Livro *leLivro(FILE *fp);
 
-void imprimeLivro(Livro *livro);
+char *leLinha2(FILE *fp);
+
+void liberaLivro(Livro *l);
+
+void imprimeLivro(Livro *l);
+
+int retIdLivro(Livro *l);
 
 #endif

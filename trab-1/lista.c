@@ -1,14 +1,19 @@
+// Feito dia 09/06/2025
+// Yuri Tressmann Mutz
+// Todos os direitos reservados
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "lista.h"
+#include "leitor.h"
+#include "livro.h"
 
 struct Celula{
 
     void *prod;
     int tipo;
     Celula *prox;
-    Celula *ant;
 
 };
 
@@ -49,14 +54,16 @@ void *liberaLista(Lista *l){
         
         if(inicio->tipo == LIVRO){
 
-            liberaLivro(inicio);
+            liberaLivro(inicio->prod);
 
         } else {
 
-            liberaLeitor(inicio);
+            liberaLeitor(inicio->prod);
 
         }
         
+        free(inicio);
+
         inicio = prox;
 
     }
@@ -90,12 +97,12 @@ void *imprimeLista(Lista *l){
 
 Celula *retiraLista(Lista *lista, char *nome){
 
-    //Celula *ant = NULL;
+    Celula *ant = NULL;
     Celula *p = lista->inicio;
 
-    while(p != NULL && (strcmp(retNomeGato(p->prod), nome) != 0 && strcmp(retNomeCachorro(p->prod), nome) != 0)){
-
-        //ant = p;
+    // while(p != NULL && (strcmp(retNomeGato(p->prod), nome) != 0 && strcmp(retNomeCachorro(p->prod), nome) != 0)){
+    while(p != NULL){
+        ant = p;
         p = p->prox;
 
     }
@@ -116,11 +123,8 @@ Celula *retiraLista(Lista *lista, char *nome){
 
     if(p == lista->fim){
 
-        //lista->fim = ant;
-        lista->fim = p->ant;
-        
-        //ant->prox = NULL;
-        p->ant->prox = NULL;
+        lista->fim = ant;    
+        ant->prox = NULL;     
 
         return(p);
 
@@ -132,8 +136,7 @@ Celula *retiraLista(Lista *lista, char *nome){
 
     } else {
 
-        //ant->prox = p->prox;
-        p->ant->prox = p->prox;
+        ant->prox = p->prox;
 
     }
 
@@ -152,7 +155,6 @@ void *insereLista(Lista *l, void *p, int tipo){
     } else {
 
         l->fim->prox = novo;
-        novo->ant = l->fim;
         l->fim = l->fim->prox;
 
     }
@@ -160,24 +162,85 @@ void *insereLista(Lista *l, void *p, int tipo){
     l->fim->prod = p;
     l->fim->tipo = tipo;
     l->fim->prox = NULL;
+    
 
 }
 
 void *insereCelula(Lista *l, Celula *cel){
 
-    if(l->fim == NULL){
+    if(l != NULL && cel != NULL){
 
-        l->inicio = l->fim = cel;
+    //     if(l->fim == NULL){
 
-    } else {
+    //         l->inicio = l->fim = cel;
 
-        l->fim->prox = cel;
-        cel->ant = l->fim;
-        l->fim = l->fim->prox;
+    //     } else {
 
+    //         l->fim->prox = cel;
+    //         l->fim = l->fim->prox;
+
+    //     }
+
+    //     l->fim->prox = NULL;
+
+        Celula *novo = malloc(sizeof(Celula));
+
+        if(l->fim == NULL){
+
+            l->inicio = l->fim = novo; 
+
+        } else {
+
+            l->fim->prox = novo;
+            l->fim = l->fim->prox;
+
+        }
+
+        l->fim->prod = cel->prod;
+        l->fim->tipo = cel->tipo;
+        l->fim->prox = NULL;
+        
     }
 
-    l->fim->prox = NULL;
+    
+
+}
+
+Celula *busca(Lista *l, int id){
+
+    Celula *aux = l->inicio;
+
+    while(aux != NULL){
+
+        if(aux->tipo == LIVRO){
+
+            if(retIdLivro(aux->prod) == id){
+                return aux;
+
+            }
+
+        } else {
+
+            if(retId(aux->prod) == id){
+                return aux;
+
+            }
+
+        }
+
+        aux = aux->prox;
+
+    }
+    
+    return NULL;
+
+}
+
+Lista *retListaLidos(Celula *cel){
+
+    Lista *aux = retListaLidosLeitor(cel->prod);
+
+    return aux;
 
 }
 

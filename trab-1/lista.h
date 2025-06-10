@@ -1,5 +1,12 @@
+// Feito dia 09/06/2025
+// Yuri Tressmann Mutz
+// Todos os direitos reservados
+
 #ifndef LISTA
 #define LISTA
+
+// #include "leitor.h"
+// #include "livro.h"
 
 #define LIVRO 0
 #define LEITOR 1
@@ -20,5 +27,8 @@ void *insereLista(Lista *l, void *p, int tipo);
 
 void *insereCelula(Lista *l, Celula *cel);
 
+Celula *busca(Lista *l, int id);
+
+Lista *retListaLidos(Celula *cel);
 
 #endif
