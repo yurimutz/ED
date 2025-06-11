@@ -54,11 +54,11 @@ void insereFila (Fila* f, Amostra *amostra){
 
     } else {
 
-        if (f->fim == NULL){ /* verifica se lista não estava vazia */
+        if (f->fim == NULL){ /* verifica se lista estava vazia */
 
             f->fim = f->ini = n;
 
-        }else{ /* fila estava vazia */
+        }else{ /* fila nao estava vazia */
 
             n->prox = f->ini;
             f->ini = n; 
