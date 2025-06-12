@@ -1,3 +1,7 @@
+//
+//  Created by Yuri Tressmann Mutz on 14/07/22.
+//
+
 #include "fila.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,17 +44,16 @@ void insereFila (Fila* f, Amostra *amostra){
 
     if(retornaIdade(amostra) < 60){
 
-        if (f->fim != NULL){ /* verifica se lista não estava vazia */
+        if(f->fim == NULL){
+
+            f->fim = f->ini = n;
+
+        } else {
 
             f->fim->prox = n;
-
-        }else{ /* fila estava vazia */
-
-            f->ini = n; 
+            f->fim = n;
 
         }
-
-        f->fim = n;
 
     } else {
 

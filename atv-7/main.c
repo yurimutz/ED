@@ -1,10 +1,10 @@
 //
-//  testador1.c
+//  testador3.c
 //  PostoSaude
 //
 //  Created by Patricia Dockhorn Costa on 14/07/22.
 //
-//  Testador 1 (vale até 6,0): Testa criação, inserção e impressão
+//  Testador 3 (vale até 10,0): Testa criação, inserção, impressão, retirada e liberação de memória
 
 #include <stdio.h>
 #include "posto.h"
