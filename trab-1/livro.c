@@ -92,3 +92,9 @@ int retIdLivro(Livro *l){
     return l->id;
 
 }
+
+char *retLivroTitulo(Livro *l){
+
+    return l->titulo;
+
+}

@@ -24,4 +24,16 @@ int retId(Leitor *l);
 
 Lista *retListaLidosLeitor(Leitor *l);
 
+Lista *retListaDesejadosLeitor(Leitor *l);
+
+Lista *retListaRecomendadosLeitor(Leitor *l);
+
+Lista *retListaLeitoresComAfinidadeLeitor(Leitor *l);
+
+char *retLeitorNome(Leitor *l);
+
+int verficaAfinidade(Leitor *l1, Leitor *l2);
+
+int verificaListaLeitoresComAfinidade(Leitor *l1, Leitor *l2);
+
 #endif

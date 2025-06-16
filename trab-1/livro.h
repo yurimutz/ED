@@ -21,4 +21,6 @@ void imprimeLivro(Livro *l);
 
 int retIdLivro(Livro *l);
 
+char *retLivroTitulo(Livro *l);
+
 #endif

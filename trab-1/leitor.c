@@ -16,6 +16,7 @@ struct Leitor{
     Lista *lidos;
     Lista *desejados;
     Lista *recomendacoes;
+    Lista *leitoresComAfinidade;
     
 };
 
@@ -37,6 +38,7 @@ Leitor *criaLeitor(int id, char *nome, int nAfinidades, FILE *fp){
     l->lidos = criaLista();
     l->desejados = criaLista();
     l->recomendacoes= criaLista();
+    l->leitoresComAfinidade = criaLista();
 
     return l;
 
@@ -96,9 +98,10 @@ void liberaLeitor(Leitor *l){
 
     free(l->afinidades);
 
-    liberaLista(l->lidos);
-    liberaLista(l->desejados);
-    liberaLista(l->recomendacoes);
+    liberaExterno(l->lidos);
+    liberaExterno(l->desejados);
+    liberaExterno(l->recomendacoes);
+    liberaExterno(l->leitoresComAfinidade);
 
     free(l);
 
@@ -106,15 +109,23 @@ void liberaLeitor(Leitor *l){
 
 void imprimeLeitor(Leitor *l){
 
-    printf("%d\n", l->id);
-    printf("%s\n", l->nome);
-    printf("%d\n", l->nAfinidades);
+    printf("Leitor: %s\n", l->nome);
+    
+    printf("Lidos: ");
+    imprimeLista(l->lidos);
+    printf("\n");
 
-    for(int i=0; i<l->nAfinidades; i++){
+    printf("Desejados: ");
+    imprimeLista(l->desejados);
+    printf("\n");
 
-        printf("%s\n", l->afinidades[i]);
+    printf("Recomendacoes: ");
+    imprimeLista(l->recomendacoes);
+    printf("\n");
 
-    }
+    printf("Afinidades: ");
+    imprimeLista(l->leitoresComAfinidade);
+    printf("\n\n");
 
 }
 
@@ -127,5 +138,69 @@ int retId(Leitor *l){
 Lista *retListaLidosLeitor(Leitor *l){
 
     return l->lidos;
+
+}
+
+Lista *retListaDesejadosLeitor(Leitor *l){
+
+    return l->desejados;
+
+}
+
+Lista *retListaRecomendadosLeitor(Leitor *l){
+
+    return l->recomendacoes;
+
+}
+
+Lista *retListaLeitoresComAfinidadeLeitor(Leitor *l){
+
+    return l->leitoresComAfinidade;
+
+}
+
+char *retLeitorNome(Leitor *l){
+
+    return l->nome;
+
+}
+
+int verficaAfinidade(Leitor *l1, Leitor *l2){
+
+    if(strcmp(l1->nome, l2->nome) != 0){
+
+        for(int i=0; i<l1->nAfinidades; i++){
+
+            for(int j=0; j<l2->nAfinidades; j++){
+
+                if(strcmp(l1->afinidades[i], l2->afinidades[j]) == 0){
+
+                    return 1;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    return 0;
+
+}
+
+int verificaListaLeitoresComAfinidade(Leitor *l1, Leitor *l2){
+
+    if(strcmp(l1->nome, l2->nome) != 0){
+
+        if(encotraLeitorComum(l1->leitoresComAfinidade, l2->leitoresComAfinidade)){
+
+            return 1;
+
+        }
+
+    }
+
+    return 0;
 
 }
