@@ -21,9 +21,9 @@ void liberaLista(Lista *l);
 
 void liberaExterno(Lista *l);
 
-void imprimeLista(Lista *l);
+void imprimeLista(Lista *l, FILE *fp);
 
-void imprimeBookED(Lista *l);
+void imprimeBookED(Lista *l, FILE *fp);
 
 Celula *retiraLista(Lista *l, char *nome);
 
@@ -32,6 +32,8 @@ void *insereLista(Lista *l, void *p, int tipo);
 void *insereCelula(Lista *l, Celula *cel);
 
 Celula *busca(Lista *l, int id);
+
+int retIdLivroLista(Celula *l);
 
 Lista *retListaLidos(Celula *cel);
 
@@ -45,12 +47,14 @@ char *retLivroTituloLista(Celula *cel);
 
 char *retLeitorNomeLista(Celula *cel);
 
-void *verificaLivrosEmComum(Celula *l1, Celula *l2);
+void *verificaLivrosEmComum(Celula *l1, Celula *l2, FILE *fp);
 
 void adicionaAfinidades(Lista *l);
 
-int verificaAfinidadeLista(Celula *l1, Celula *l2);
+int verificaAfinidadeLista(Celula *l1, Celula *l2, FILE *fp);
 
 int encotraLeitorComum(Lista *l1, Lista *l2);
+
+int comparaIdsLista(Celula *l1, Celula *l2);
 
 #endif

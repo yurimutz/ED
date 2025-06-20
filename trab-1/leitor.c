@@ -46,18 +46,6 @@ Leitor *criaLeitor(int id, char *nome, int nAfinidades, FILE *fp){
 
 Leitor *leLeitor(FILE *fp){
 
-    // int id=0;
-    // scanf("%d;", &id);
-
-    // char *nome = leLinha(fp);
-
-    // int nAfinidades=0;
-    // scanf("%d;", &nAfinidades);
-
-    // Leitor *l = criaLeitor(id, nome, nAfinidades);
-
-    // return l;
-
     int id=0;
     fscanf(fp, "%d;", &id);
 
@@ -107,25 +95,25 @@ void liberaLeitor(Leitor *l){
 
 }
 
-void imprimeLeitor(Leitor *l){
+void imprimeLeitor(Leitor *l, FILE *fp){
 
-    printf("Leitor: %s\n", l->nome);
-    
-    printf("Lidos: ");
-    imprimeLista(l->lidos);
-    printf("\n");
+    fprintf(fp, "Leitor: %s\n", l->nome);
 
-    printf("Desejados: ");
-    imprimeLista(l->desejados);
-    printf("\n");
+    fprintf(fp, "Lidos: ");
+    imprimeLista(l->lidos, fp);
+    fprintf(fp, "\n");
 
-    printf("Recomendacoes: ");
-    imprimeLista(l->recomendacoes);
-    printf("\n");
+    fprintf(fp, "Desejados: ");
+    imprimeLista(l->desejados, fp);
+    fprintf(fp, "\n");
 
-    printf("Afinidades: ");
-    imprimeLista(l->leitoresComAfinidade);
-    printf("\n\n");
+    fprintf(fp, "Recomendacoes: ");
+    imprimeLista(l->recomendacoes, fp);
+    fprintf(fp, "\n");
+
+    fprintf(fp, "Afinidades: ");
+    imprimeLista(l->leitoresComAfinidade, fp);
+    fprintf(fp, "\n");
 
 }
 
@@ -202,5 +190,11 @@ int verificaListaLeitoresComAfinidade(Leitor *l1, Leitor *l2){
     }
 
     return 0;
+
+}
+
+int comparaIdLeitor(Leitor *l1, Leitor *l2){
+
+    return l1->id == l2->id;
 
 }

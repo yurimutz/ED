@@ -23,4 +23,6 @@ int retIdLivro(Livro *l);
 
 char *retLivroTitulo(Livro *l);
 
+int comparaIdLivro(Livro *l1, Livro* l2);
+
 #endif

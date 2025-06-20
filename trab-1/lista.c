@@ -84,7 +84,7 @@ void liberaExterno(Lista *l){
 
 }
 
-void imprimeLista(Lista *l){
+void imprimeLista(Lista *l, FILE *fp){
 
     Celula *aux = l->inicio;
 
@@ -96,11 +96,11 @@ void imprimeLista(Lista *l){
 
             if(cont == 0){
 
-                printf("%s", retLivroTitulo(aux->prod));
+                fprintf(fp, "%s", retLivroTitulo(aux->prod));
 
             } else {
 
-                printf(" , %s", retLivroTitulo(aux->prod));
+                fprintf(fp, ", %s", retLivroTitulo(aux->prod));
 
             }
 
@@ -108,11 +108,11 @@ void imprimeLista(Lista *l){
 
             if(cont == 0){
 
-                printf("%s", retLeitorNome(aux->prod));
+                fprintf(fp, "%s", retLeitorNome(aux->prod));
 
             } else {
 
-                printf(" , %s", retLeitorNome(aux->prod));
+                fprintf(fp, ", %s", retLeitorNome(aux->prod));
 
             }
 
@@ -127,15 +127,16 @@ void imprimeLista(Lista *l){
 
 }
 
-void imprimeBookED(Lista *l){
+void imprimeBookED(Lista *l, FILE *fp){
 
-    printf("Imprime toda a BookED\n\n");
+    fprintf(fp, "Imprime toda a BookED\n\n");
 
     Celula *aux = l->inicio;
 
     while(aux != NULL){
 
-        imprimeLeitor(aux->prod);
+        imprimeLeitor(aux->prod, fp);
+        fprintf(fp, "\n");
 
         aux = aux->prox;
 
@@ -217,19 +218,6 @@ void *insereCelula(Lista *l, Celula *cel){
 
     if(l != NULL && cel != NULL){
 
-    //     if(l->fim == NULL){
-
-    //         l->inicio = l->fim = cel;
-
-    //     } else {
-
-    //         l->fim->prox = cel;
-    //         l->fim = l->fim->prox;
-
-    //     }
-
-    //     l->fim->prox = NULL;
-
         Celula *novo = malloc(sizeof(Celula));
 
         if(l->fim == NULL){
@@ -281,6 +269,12 @@ Celula *busca(Lista *l, int id){
 
 }
 
+int retIdLivroLista(Celula *l){
+
+    return retIdLivro(l->prod);
+
+}
+
 Lista *retListaLidos(Celula *cel){
 
     Lista *aux = retListaLidosLeitor(cel->prod);
@@ -325,7 +319,7 @@ char *retLeitorNomeLista(Celula *cel){
 
 }
 
-void *verificaLivrosEmComum(Celula *l1, Celula *l2){
+void *verificaLivrosEmComum(Celula *l1, Celula *l2, FILE *fp){
 
     Lista *afinidade1 = retListaLidos(l1);
     Lista *afinidade2 = retListaLidos(l2);
@@ -334,7 +328,7 @@ void *verificaLivrosEmComum(Celula *l1, Celula *l2){
 
     int cont = 0;
 
-    printf("Livros em comum entre %s e %s: ", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
+    fprintf(fp, "Livros em comum entre %s e %s: ", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
 
     while(lista1 != NULL){
 
@@ -344,9 +338,15 @@ void *verificaLivrosEmComum(Celula *l1, Celula *l2){
 
             if(strcmp(retLivroTitulo(lista1->prod), retLivroTitulo(lista2->prod)) == 0){
 
+                if(cont != 0){
+
+                    fprintf(fp, ", ");
+
+                }
+
                 cont++;
 
-                printf("%s", retLivroTitulo(lista1->prod));
+                fprintf(fp, "%s", retLivroTitulo(lista1->prod));
 
             }
 
@@ -360,11 +360,11 @@ void *verificaLivrosEmComum(Celula *l1, Celula *l2){
 
     if(cont == 0){
 
-        printf("Nenhum livro em comum\n");
+        fprintf(fp, "Nenhum livro em comum\n");
 
     } else {
 
-        printf("\n");
+        fprintf(fp, "\n");
 
     }
 
@@ -398,11 +398,11 @@ void adicionaAfinidades(Lista *l){
 
 }
 
-int verificaAfinidadeLista(Celula *l1, Celula *l2){
+int verificaAfinidadeLista(Celula *l1, Celula *l2, FILE *fp){
 
     if(verficaAfinidade(l1->prod, l2->prod)){
 
-        printf("Existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
+        fprintf(fp, "Existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
 
         return 1;
 
@@ -410,11 +410,13 @@ int verificaAfinidadeLista(Celula *l1, Celula *l2){
 
     if(verificaListaLeitoresComAfinidade(l1->prod, l2->prod)){
 
-        printf("Existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
+        fprintf(fp, "Existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
 
         return 1;
 
     }
+
+    fprintf(fp, "Não existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
 
     return 0;
 
@@ -441,6 +443,22 @@ int encotraLeitorComum(Lista *l1, Lista *l2){
         }
 
         aux = aux->prox;
+
+    }
+
+    return 0;
+
+}
+
+int comparaIdsLista(Celula *l1, Celula *l2){
+
+    if(l1->tipo == LEITOR){
+
+        return comparaIdLeitor(l1->prod, l2->prod);
+
+    } else {
+
+        return comparaIdLivro(l1->prod, l2->prod);
 
     }
 

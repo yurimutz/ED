@@ -98,3 +98,9 @@ char *retLivroTitulo(Livro *l){
     return l->titulo;
 
 }
+
+int comparaIdLivro(Livro *l1, Livro* l2){
+
+    return l1->id == l2->id;
+
+}
