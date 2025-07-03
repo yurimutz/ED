@@ -5,11 +5,11 @@
 #ifndef LISTA
 #define LISTA
 
-// #include "leitor.h"
-// #include "livro.h"
+#include <stdio.h>
 
 #define LIVRO 0
 #define LEITOR 1
+#define REC 2
 
 typedef struct Lista Lista;
 
@@ -24,6 +24,8 @@ void liberaExterno(Lista *l);
 void imprimeLista(Lista *l, FILE *fp);
 
 void imprimeBookED(Lista *l, FILE *fp);
+
+void imprimeTeste(Lista *l);
 
 Celula *retiraLista(Lista *l, char *nome);
 
@@ -43,6 +45,8 @@ Lista *retListaRecomendados(Celula *cel);
 
 Lista *retListaLeitoresComAfinidade(Celula *cel);
 
+Lista *retListaRecProd(Celula *cel);
+
 char *retLivroTituloLista(Celula *cel);
 
 char *retLeitorNomeLista(Celula *cel);
@@ -56,5 +60,15 @@ int verificaAfinidadeLista(Celula *l1, Celula *l2, FILE *fp);
 int encotraLeitorComum(Lista *l1, Lista *l2);
 
 int comparaIdsLista(Celula *l1, Celula *l2);
+
+Celula *retPrimeiraCelula(Lista *l1);
+
+Celula *retProximaCelula(Celula *l1);
+
+int retIdLista(Celula *l1);
+
+void *retProdLista(Celula *l1);
+
+int existeRec(Lista *rec, int idLivro, int idLeitor);
 
 #endif

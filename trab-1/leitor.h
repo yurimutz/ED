@@ -20,6 +20,8 @@ void liberaLeitor(Leitor *l);
 
 void imprimeLeitor(Leitor *l, FILE *fp);
 
+void imprimeLeitor2(Leitor *l);
+
 int retId(Leitor *l);
 
 Lista *retListaLidosLeitor(Leitor *l);
@@ -30,11 +32,15 @@ Lista *retListaRecomendadosLeitor(Leitor *l);
 
 Lista *retListaLeitoresComAfinidadeLeitor(Leitor *l);
 
+Lista *retRecProd(Leitor *l);
+
 char *retLeitorNome(Leitor *l);
 
 int verficaAfinidade(Leitor *l1, Leitor *l2);
 
 int verificaListaLeitoresComAfinidade(Leitor *l1, Leitor *l2);
+
+int buscaProfundidade(Leitor *l1, Leitor *l2, Lista *visitados);
 
 int comparaIdLeitor(Leitor *l1, Leitor *l2);
 

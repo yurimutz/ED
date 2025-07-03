@@ -4,6 +4,7 @@
 
 #include "leitor.h"
 #include "livro.h"
+#include "recomendacao.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,12 +87,6 @@ int main(){
     int flag=0;
 
     while(!feof(fp3)){
-  
-        if(flag != 0){
-
-            break;
-
-        }
 
         int mode=0;
         fscanf(fp3, "%d;", &mode);
@@ -159,13 +154,13 @@ int main(){
 
                 } else {
 
-                    Lista *aux2 = retListaDesejados(leitorAux2);
+                    Lista *listaAuxDesejados2 = retListaDesejados(leitorAux2);
 
-                    Celula *retBusca2 = busca(aux2, retIdLivroLista(livroAux2));
+                    Celula *retBusca2 = busca(listaAuxDesejados2, retIdLivroLista(livroAux2));
 
                     if(retBusca2 == NULL){
 
-                        insereCelula(aux2, livroAux2);
+                        insereCelula(listaAuxDesejados2, livroAux2);
 
                         fprintf(saida, "%s deseja ler \"%s\"\n", retLeitorNomeLista(leitorAux2), retLivroTituloLista(livroAux2));
 
@@ -187,11 +182,11 @@ int main(){
                     
                 Celula *livroAux3 = busca(livros, idLivro3);
 
-                Celula *leitorAux3 = busca(leitores, idLeitor3);
+                Celula *leitorFazRec3 = busca(leitores, idLeitor3);
                     
                 Celula *leitorDest3 = busca(leitores, idLeitorDest3);
 
-                if(leitorAux3 == NULL){
+                if(leitorFazRec3 == NULL){
 
                     fprintf(saida, "Erro: Leitor recomendador com ID %d não encontrado\n", idLeitor3);
 
@@ -205,19 +200,21 @@ int main(){
 
                 } else {
 
-                    Lista *aux3 = retListaRecomendados(leitorDest3);
+                    Lista *auxRec3 = retListaRecomendados(leitorDest3);
 
                     Lista *lidos3 = retListaLidos(leitorDest3);
 
                     Lista *desejados3 = retListaDesejados(leitorDest3);
 
+                    Lista *recProd3 = retListaRecProd(leitorDest3); //novo
+
                     Celula *retBusca3 = busca(lidos3, retIdLivroLista(livroAux3));
 
                     Celula *retbusca33 = busca(desejados3, retIdLivroLista(livroAux3));
 
-                    if(comparaIdsLista(leitorAux3, leitorDest3)){
+                    if(comparaIdsLista(leitorFazRec3, leitorDest3)){
 
-                        fprintf(saida, "%s não pode recomendar livros para si mesmo\n", retLeitorNomeLista(leitorAux3));
+                        fprintf(saida, "%s não pode recomendar livros para si mesmo\n", retLeitorNomeLista(leitorFazRec3));
 
                     } else if(retBusca3 != NULL){
 
@@ -229,9 +226,13 @@ int main(){
 
                     } else {
 
-                        insereCelula(aux3, livroAux3);
+                        Rec *recAux = criaRec(retProdLista(livroAux3), retProdLista(leitorFazRec3)); //novo
 
-                        fprintf(saida, "%s recomenda \"%s\" para %s\n", retLeitorNomeLista(leitorAux3), retLivroTituloLista(livroAux3), retLeitorNomeLista(leitorDest3));
+                        insereLista(recProd3, recAux, 2); //novo
+
+                        insereCelula(auxRec3, livroAux3);
+
+                        fprintf(saida, "%s recomenda \"%s\" para %s\n", retLeitorNomeLista(leitorFazRec3), retLivroTituloLista(livroAux3), retLeitorNomeLista(leitorDest3));
 
                     }
 
@@ -247,43 +248,46 @@ int main(){
                     
                 Celula *livroAux4 = busca(livros, idLivro4);
 
-                Celula *leitorRecebe = busca(leitores, idRecebeRec);
+                Celula *leitorRecebe4 = busca(leitores, idRecebeRec);
                     
-                Celula *leitorFazRec = busca(leitores, idFazRec);
+                Celula *leitorFazRec4 = busca(leitores, idFazRec);
+                
 
-                if(leitorRecebe == NULL){
+                if(leitorRecebe4 == NULL){
 
                     fprintf(saida, "Erro: Leitor com ID %d não encontrado\n", idRecebeRec);
                 
-                } else if(leitorFazRec == NULL){
+                } else if(leitorFazRec4 == NULL){
 
                     fprintf(saida, "Erro: Leitor recomendador com ID %d não encontrado\n", idFazRec);
 
                 } else if(livroAux4 == NULL){
-       
-                    fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe), idLivro4 ,retLeitorNomeLista(leitorFazRec));
+
+                    fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe4), idLivro4 ,retLeitorNomeLista(leitorFazRec4));
 
                 } else {
 
-                    Lista *auxRec = retListaRecomendados(leitorRecebe);
+                    Lista *auxRec4 = retListaRecomendados(leitorRecebe4);
 
-                    Lista *auxDesejados = retListaDesejados(leitorRecebe);
+                    Lista *recProd4 = retListaRecProd(leitorRecebe4); //novo
 
-                    Celula *buscaRet4 = busca(auxRec, retIdLivroLista(livroAux4));
+                    Lista *auxDesejados4 = retListaDesejados(leitorRecebe4);
 
-                    if(buscaRet4 != NULL){
+                    if(existeRec(recProd4, idLivro4, idFazRec)){
 
-                        Celula *temp = retiraLista(auxRec, retLivroTituloLista(livroAux4));
+                        Celula *ret4 = retiraLista(auxRec4, retLivroTituloLista(livroAux4));
 
-                        insereCelula(auxDesejados, temp);
+                        Celula *ret4Teste = retiraLista(recProd4, retLivroTituloLista(livroAux4)); //novo
 
-                        free(temp);
+                        insereCelula(auxDesejados4, ret4);
 
-                        fprintf(saida, "%s aceita recomendação \"%s\" de %s\n", retLeitorNomeLista(leitorRecebe), retLivroTituloLista(livroAux4), retLeitorNomeLista(leitorFazRec));
+                        free(ret4);
+
+                        fprintf(saida, "%s aceita recomendação \"%s\" de %s\n", retLeitorNomeLista(leitorRecebe4), retLivroTituloLista(livroAux4), retLeitorNomeLista(leitorFazRec4));
 
                     } else {
 
-                        fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe), retIdLivroLista(livroAux4),retLeitorNomeLista(leitorFazRec));
+                        fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe4), retIdLivroLista(livroAux4),retLeitorNomeLista(leitorFazRec4));
 
                     }
 
@@ -299,39 +303,41 @@ int main(){
         
                 Celula *livroAux5 = busca(livros, idLivro5);
 
-                Celula *leitorRecebe2 = busca(leitores, idRecebeRec2);
+                Celula *leitorRecebe5 = busca(leitores, idRecebeRec2);
                     
-                Celula *leitorFazRec2 = busca(leitores, idFazRec2);
+                Celula *leitorFazRec5 = busca(leitores, idFazRec2);
 
-                if(leitorRecebe2 == NULL){
+                if(leitorRecebe5 == NULL){
 
                     fprintf(saida, "Erro: Leitor com ID %d não encontrado\n", idRecebeRec2);
                 
-                } else if(leitorFazRec2 == NULL){
+                } else if(leitorFazRec5 == NULL){
 
                     fprintf(saida, "Erro: Leitor recomendador com ID %d não encontrado\n", idFazRec2);
 
                 } else if(livroAux5 == NULL){
        
-                    fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe2), idLivro5 ,retLeitorNomeLista(leitorFazRec2));
+                    fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe5), idLivro5 ,retLeitorNomeLista(leitorFazRec5));
 
-                } else if(leitorRecebe2 != NULL && livroAux5 != NULL && leitorFazRec2 != NULL){
+                } else if(leitorRecebe5 != NULL && livroAux5 != NULL && leitorFazRec5 != NULL){
 
-                    Lista *auxRec = retListaRecomendados(leitorRecebe2);
+                    Lista *auxRec5 = retListaRecomendados(leitorRecebe5);
 
-                    Celula *buscaRet5 = busca(auxRec, retIdLivroLista(livroAux5));
+                    Lista *recProd5 = retListaRecProd(leitorRecebe5); //novo
 
-                    if(buscaRet5 != NULL){
+                    if(existeRec(recProd5, idLivro5, idFazRec2)){
 
-                        Celula *livroRet = retiraLista(auxRec, retLivroTituloLista(livroAux5));
+                        Celula *livroRet = retiraLista(auxRec5, retLivroTituloLista(livroAux5));
+
+                        Celula *livroRetTeste = retiraLista(recProd5, retLivroTituloLista(livroAux5));
 
                         free(livroRet);
 
-                        fprintf(saida, "%s rejeita recomendação \"%s\" de %s\n", retLeitorNomeLista(leitorRecebe2), retLivroTituloLista(livroAux5), retLeitorNomeLista(leitorFazRec2));
+                        fprintf(saida, "%s rejeita recomendação \"%s\" de %s\n", retLeitorNomeLista(leitorRecebe5), retLivroTituloLista(livroAux5), retLeitorNomeLista(leitorFazRec5));
 
                     } else {
 
-                        fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe2), retIdLivroLista(livroAux5), retLeitorNomeLista(leitorFazRec2));
+                        fprintf(saida, "%s não possui recomendação do livro ID %d feita por %s\n", retLeitorNomeLista(leitorRecebe5), retIdLivroLista(livroAux5), retLeitorNomeLista(leitorFazRec5));
 
                     }
 
@@ -393,8 +399,11 @@ int main(){
 
             case 8:
                     
+                char vazio8[50];
+
+                fscanf(fp3, "%[^\n]", vazio8);
+
                 imprimeBookED(leitores, saida);
-                flag++;
 
                 break;
                 
@@ -402,7 +411,7 @@ int main(){
 
                 char vazio[50];
 
-                fscanf(fp3, "%s", vazio);
+                fscanf(fp3, "%[^\n]", vazio);
 
                 fprintf(saida, "Erro: Comando %d não reconhecido\n", mode);  
 

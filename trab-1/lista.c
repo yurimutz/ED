@@ -2,12 +2,12 @@
 // Yuri Tressmann Mutz
 // Todos os direitos reservados
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "lista.h"
 #include "leitor.h"
 #include "livro.h"
+#include "recomendacao.h"
 
 struct Celula{
 
@@ -48,9 +48,13 @@ void liberaLista(Lista *l){
 
             liberaLivro(inicio->prod);
 
-        } else {
+        } else if(inicio->tipo == LEITOR){
 
             liberaLeitor(inicio->prod);
+
+        } else {
+
+            liberaRec(inicio->prod);
 
         }
         
@@ -141,6 +145,21 @@ void imprimeBookED(Lista *l, FILE *fp){
         aux = aux->prox;
 
     }
+
+}
+
+void imprimeTeste(Lista *l){
+
+    Celula *aux = l->inicio;
+
+    while(aux != NULL){
+
+        imprimeRec(aux->prod);
+
+        aux = aux->prox;
+
+    }
+
 
 }
 
@@ -307,6 +326,12 @@ Lista *retListaLeitoresComAfinidade(Celula *cel){
 
 }
 
+Lista *retListaRecProd(Celula *cel){
+
+    return retRecProd(cel->prod);
+
+}
+
 char *retLivroTituloLista(Celula *cel){
 
     return retLivroTitulo(cel->prod);
@@ -408,15 +433,21 @@ int verificaAfinidadeLista(Celula *l1, Celula *l2, FILE *fp){
 
     }
 
-    if(verificaListaLeitoresComAfinidade(l1->prod, l2->prod)){
+    Lista *visitados = criaLista();
+
+    if(buscaProfundidade(l1->prod, l2->prod, visitados)){
 
         fprintf(fp, "Existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
+
+        liberaExterno(visitados);
 
         return 1;
 
     }
 
     fprintf(fp, "Não existe afinidade entre %s e %s\n", retLeitorNome(l1->prod), retLeitorNome(l2->prod));
+
+    liberaExterno(visitados);
 
     return 0;
 
@@ -459,6 +490,58 @@ int comparaIdsLista(Celula *l1, Celula *l2){
     } else {
 
         return comparaIdLivro(l1->prod, l2->prod);
+
+    }
+
+    return 0;
+
+}
+
+Celula *retPrimeiraCelula(Lista *l1){
+
+    return l1->inicio;
+
+}
+
+Celula *retProximaCelula(Celula *l1){
+
+    return l1->prox;
+
+}
+
+int retIdLista(Celula *l1){
+
+    if(l1->tipo == LEITOR){
+
+        return retId(l1->prod);
+
+    } else {
+
+        return retIdLivro(l1->prod);
+
+    }
+
+}
+
+void *retProdLista(Celula *l1){
+
+    return l1->prod;
+
+}
+
+int existeRec(Lista *rec, int idLivro, int idLeitor){
+
+    Celula *aux = rec->inicio;
+
+    while(aux != NULL){
+
+        if(comparaRec(aux->prod, idLivro, idLeitor)){
+
+            return 1;
+
+        }
+
+        aux = aux->prox;
 
     }
 

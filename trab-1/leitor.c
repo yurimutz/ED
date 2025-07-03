@@ -16,6 +16,7 @@ struct Leitor{
     Lista *lidos;
     Lista *desejados;
     Lista *recomendacoes;
+    Lista *recProd;
     Lista *leitoresComAfinidade;
     
 };
@@ -39,6 +40,7 @@ Leitor *criaLeitor(int id, char *nome, int nAfinidades, FILE *fp){
     l->desejados = criaLista();
     l->recomendacoes= criaLista();
     l->leitoresComAfinidade = criaLista();
+    l->recProd = criaLista();
 
     return l;
 
@@ -90,6 +92,7 @@ void liberaLeitor(Leitor *l){
     liberaExterno(l->desejados);
     liberaExterno(l->recomendacoes);
     liberaExterno(l->leitoresComAfinidade);
+    liberaLista(l->recProd);
 
     free(l);
 
@@ -114,6 +117,12 @@ void imprimeLeitor(Leitor *l, FILE *fp){
     fprintf(fp, "Afinidades: ");
     imprimeLista(l->leitoresComAfinidade, fp);
     fprintf(fp, "\n");
+
+}
+
+void imprimeLeitor2(Leitor *l){
+
+    printf("%s\n", l->nome);
 
 }
 
@@ -144,6 +153,12 @@ Lista *retListaRecomendadosLeitor(Leitor *l){
 Lista *retListaLeitoresComAfinidadeLeitor(Leitor *l){
 
     return l->leitoresComAfinidade;
+
+}
+
+Lista *retRecProd(Leitor *l){
+
+    return l->recProd;
 
 }
 
@@ -190,6 +205,36 @@ int verificaListaLeitoresComAfinidade(Leitor *l1, Leitor *l2){
     }
 
     return 0;
+
+}
+
+int buscaProfundidade(Leitor *l1, Leitor *l2, Lista *visitados){
+
+    insereLista(visitados, l1, LEITOR);
+
+    if(busca(l1->leitoresComAfinidade, retId(l2)) != NULL){
+
+        return 1;
+
+    }
+
+    Celula *aux = retPrimeiraCelula(l1->leitoresComAfinidade);
+
+    while(aux != NULL){
+
+        if(!busca(visitados, retIdLista(aux))){
+
+            if(buscaProfundidade(retProdLista(aux), l2, visitados)){
+
+                return 1;
+
+            }
+
+        }
+
+        aux = retProximaCelula(aux);
+
+    }
 
 }
 
