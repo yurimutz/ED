@@ -148,21 +148,6 @@ void imprimeBookED(Lista *l, FILE *fp){
 
 }
 
-void imprimeTeste(Lista *l){
-
-    Celula *aux = l->inicio;
-
-    while(aux != NULL){
-
-        imprimeRec(aux->prod);
-
-        aux = aux->prox;
-
-    }
-
-
-}
-
 Celula *retiraLista(Lista *lista, char *nome){
 
     Celula *ant = NULL;
