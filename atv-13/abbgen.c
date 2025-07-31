@@ -1,4 +1,4 @@
-#include "arvore.h"
+#include "abbgen.h"
 
 struct arv {
     void *info;
