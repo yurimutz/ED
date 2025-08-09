@@ -1,0 +1,13 @@
+vamos 1
+ajuda 1
+pizza 1
+Carlos 2
+Arroz 2
+io 2
+aaaaaa 2
+pedro 3
+oi 3
+------------------------
+9 palavras distintas encontradas
+17 palavras no total
+pedro é a palavra de maior frequência (3)
