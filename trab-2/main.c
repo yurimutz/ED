@@ -87,6 +87,8 @@ int main(){
 
     char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
 
+    printf("%s", txtDecodificado);
+
     fclose(fp);
 
     return 0;

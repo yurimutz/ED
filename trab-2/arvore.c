@@ -225,12 +225,35 @@ char *decodificaFinal(Arv *a, char *txtCodificado, FILE *fp){
 
     Arv *aux = a;
 
-    char *decodificado = calloc(strlen(txtCodificado), sizeof(char));
+    int tamDecodificado = 0;
+
+    char *decodificado = malloc(strlen(txtCodificado) * sizeof(char));
 
     for(int i=0; txtCodificado[i] != '\0'; i++){
 
-        
+        if(txtCodificado[i] == '0' ){
+
+            aux = aux->esq;
+
+        } else if(txtCodificado[i] == '1' ){
+
+            aux = aux->dir;
+
+        }
+
+        if(aux->dir == NULL && aux->esq == NULL){
+
+            decodificado[tamDecodificado] = aux->carac;
+            tamDecodificado++;
+
+            aux = a;
+
+        }
 
     }
+
+    decodificado[tamDecodificado] = '\0';
+
+    return decodificado;
 
 }

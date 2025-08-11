@@ -270,7 +270,7 @@ char *decodificaArquivo(Lista *l, char *txt, FILE *fp){
 
     if(l->inicio != NULL){
 
-        decodificaFinal(l->inicio->arv, txt, fp);
+        return decodificaFinal(l->inicio->arv, txt, fp);
 
     }
 
