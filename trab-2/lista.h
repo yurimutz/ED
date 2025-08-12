@@ -27,10 +27,10 @@ void criaArvoreHuff(Lista *l);
 
 int retAlturaCelula(Lista *l);
 
-char **criaDicionario(Lista *a, int altura);
+unsigned char **criaDicionario(Lista *a, int altura);
 
 Lista *criaListaOrdenada(Lista *l, int *vetFreq);
 
-char *decodificaArquivo(Lista *l, char *txt, FILE *fp);
+unsigned char *decodificaArquivo(Lista *l, char *txt, FILE *fp);
 
 #endif

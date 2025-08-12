@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "arvore.h"
+#include "bitmap.h"
 #include "lista.h"
 
 void leArquivo(int *vetFreq, FILE *fp){
 
-    char aux;
+    unsigned char aux;
     while(fread(&aux, sizeof(char), 1, fp) == 1){
         
         vetFreq[aux]++;
@@ -15,11 +16,11 @@ void leArquivo(int *vetFreq, FILE *fp){
 
 }
 
-int descobreTamString(FILE *fp, char **dic){
+int descobreTamString(FILE *fp, unsigned char **dic){
 
     int tam = 0;
 
-    char aux;
+    unsigned char aux;
     while(fread(&aux, sizeof(char), 1, fp) == 1){
         
         tam = tam + strlen(dic[aux]);
@@ -31,11 +32,11 @@ int descobreTamString(FILE *fp, char **dic){
 
 }
 
-char *codificaArquivo(char **dic, FILE *fp){
+unsigned char *codificaArquivo(unsigned char **dic, FILE *fp){
 
     fseek(fp, 0, SEEK_SET);
 
-    char *txtCodificado = calloc(descobreTamString(fp, dic), sizeof(char));
+    unsigned char *txtCodificado = calloc(descobreTamString(fp, dic), sizeof(char));
 
     fseek(fp, 0, SEEK_SET);
 
@@ -47,6 +48,18 @@ char *codificaArquivo(char **dic, FILE *fp){
     }
 
     return txtCodificado;
+
+}
+
+void compactaArquivo(unsigned char *codificado, unsigned int tam){
+
+    bitmap *bitmap = bitmapInit((unsigned int)tam);
+
+    for(int i=0; i < tam; i++){
+
+        bitmapAppendLeastSignificantBit(bitmap, codificado[i]);
+
+    }
 
 }
 
@@ -81,13 +94,11 @@ int main(){
     //tamanho da arvore + espaco para o caractere "\0"
     int altura = retAlturaCelula(l) + 1;
 
-    char **dicionario = criaDicionario(l, altura);
+    unsigned char **dicionario = criaDicionario(l, altura);
 
-    char *txtCodificado = codificaArquivo(dicionario, fp);
+    unsigned char *txtCodificado = codificaArquivo(dicionario, fp);
 
-    char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
-
-    printf("%s", txtDecodificado);
+    unsigned char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
 
     fclose(fp);
 

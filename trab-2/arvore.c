@@ -196,9 +196,9 @@ int altura(Arv* a){
 
 }
 
-void preencheDicionario(char **dic, Arv *a, char *conteudo, int altura){
+void preencheDicionario(unsigned char **dic, Arv *a, char *conteudo, int altura){
 
-    char esqAux[altura], dirAux[altura];
+    unsigned char esqAux[altura], dirAux[altura];
 
     if(a->esq == NULL && a->dir == NULL){
 

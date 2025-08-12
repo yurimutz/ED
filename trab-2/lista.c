@@ -232,9 +232,9 @@ int retAlturaCelula(Lista *l){
 
 }
 
-char **criaDicionario(Lista *a, int altura){
+unsigned char **criaDicionario(Lista *a, int altura){
 
-    char **dic = malloc(256 * sizeof(char*));
+    unsigned char **dic = malloc(256 * sizeof(char*));
 
     for(int i=0; i < 256; i++){
 
@@ -266,7 +266,7 @@ Lista *criaListaOrdenada(Lista *l, int *vetFreq){
 
 }
 
-char *decodificaArquivo(Lista *l, char *txt, FILE *fp){
+unsigned char *decodificaArquivo(Lista *l, char *txt, FILE *fp){
 
     if(l->inicio != NULL){
 
