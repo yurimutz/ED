@@ -221,6 +221,33 @@ void preencheDicionario(unsigned char **dic, Arv *a, char *conteudo, int altura)
 
 }
 
+void criaStringArvore(Arv* a, char* conteudo){
+
+    Arv *aux = a;
+
+    char strAux[2];
+    char strAux2[3];
+    strAux[1] = '\0';
+    strAux2[2] = '\0';
+
+    if(a->dir == NULL && a->esq == NULL){
+
+        strAux2[1] = a->carac;
+        strAux2[0] = '1';
+        strcat(conteudo, strAux2);
+
+    } else {
+
+        strAux[0] = '0';
+        strcat(conteudo, strAux);
+
+        criaStringArvore(a->esq, conteudo);
+        criaStringArvore(a->dir, conteudo);        
+
+    }
+
+}
+
 char *decodificaFinal(Arv *a, char *txtCodificado, FILE *fp){
 
     Arv *aux = a;

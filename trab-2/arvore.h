@@ -33,6 +33,8 @@ int altura(Arv* a);
 
 void preencheDicionario(unsigned char **dic, Arv *a, char *conteudo, int altura);
 
+void criaStringArvore(Arv* a, char* conteudo);
+
 char *decodificaFinal(Arv *a, char *txtCodificado, FILE *fp);
 
 #endif 

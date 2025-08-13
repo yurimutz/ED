@@ -248,6 +248,19 @@ unsigned char **criaDicionario(Lista *a, int altura){
 
 }
 
+char *stringArvore(Lista *l){
+
+    //preciso fazer uma funcao pra ver o tamanho de nos da arvore e usar como tamanho;
+    char * str = malloc(40 * sizeof(char));
+
+    criaStringArvore(l->inicio->arv, str);
+
+    printf("%s", str);
+
+    return str;
+
+}
+
 Lista *criaListaOrdenada(Lista *l, int *vetFreq){
 
     for(int i=0; i<256; i++){

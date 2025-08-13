@@ -51,15 +51,37 @@ unsigned char *codificaArquivo(unsigned char **dic, FILE *fp){
 
 }
 
-void compactaArquivo(unsigned char *codificado, unsigned int tam){
+void compactaArquivo(unsigned char *codificado){
 
-    bitmap *bitmap = bitmapInit((unsigned int)tam);
+    int j=0;
 
-    for(int i=0; i < tam; i++){
+    unsigned int tam = strlen(codificado);
+
+    while(tam % 8 != 0){
+
+        tam++;
+
+    }
+
+    bitmap *bitmap = bitmapInit(tam);
+
+    for(int i=0; i < strlen(codificado); i++){
 
         bitmapAppendLeastSignificantBit(bitmap, codificado[i]);
 
     }
+
+    FILE *fp = fopen("saida.txt", "wb");
+
+    int tamAux = strlen(codificado);
+
+    //tamanho util do dado compactado
+    fwrite(&tamAux, sizeof(int), 1, fp);
+    //tamanho total do dado compactado (multiplo de 8 para formar bytes);
+    fwrite(&tam, sizeof(int), 1, fp);
+    fwrite(bitmapGetContents(bitmap), sizeof(char), tam/8, fp);
+
+    fclose(fp);
 
 }
 
@@ -68,18 +90,6 @@ int main(){
     int *vetFreq = calloc(256, sizeof(int));
 
     FILE *fp = fopen("entrada.txt", "r");
-
-    //essa leitura verificar duas vezes se e o feof, assim, o ultimo carectere e lido 2x, freq do ultimo fica 1 unidade maior
-    //for(int i=0; !feof(fp); i++){
-
-        //fscanf(fp, "%c", &texto[i]);
-
-        //fazendo desse jeito o carac 'o' tem freq errada
-        // char aux;
-        // fscanf(fp, "%c", &aux);
-        // vetFreq[aux]++;
-
-    //}
 
     leArquivo(vetFreq, fp);
 
@@ -100,7 +110,27 @@ int main(){
 
     unsigned char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
 
+    compactaArquivo(txtCodificado);
+
     fclose(fp);
+
+    FILE *fp2 = fopen("saida.txt", "rb");
+
+    int tamTotal=0, tamUtil=0;
+
+    fread(&tamUtil, sizeof(int), 1, fp2);
+    fread(&tamTotal, sizeof(int), 1, fp2);
+
+    printf("%d %d\n", tamUtil, tamTotal);
+
+    unsigned char *strAux = malloc((tamTotal+1) * sizeof(char));
+
+    fread(strAux, sizeof(char), tamTotal/8, fp2);
+
+    imprimeLista(l);
+    stringArvore(l);
+
+    fclose(fp2);
 
     return 0;
 

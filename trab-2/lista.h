@@ -29,6 +29,8 @@ int retAlturaCelula(Lista *l);
 
 unsigned char **criaDicionario(Lista *a, int altura);
 
+char *stringArvore(Lista *l);
+
 Lista *criaListaOrdenada(Lista *l, int *vetFreq);
 
 unsigned char *decodificaArquivo(Lista *l, char *txt, FILE *fp);
