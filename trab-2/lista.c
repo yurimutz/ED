@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lista.h"
+#include "bitmap.h"
 
 struct Celula{
 
@@ -250,12 +251,76 @@ unsigned char **criaDicionario(Lista *a, int altura){
 
 char *stringArvore(Lista *l){
 
+    int tamBitMap=0;
+
     //preciso fazer uma funcao pra ver o tamanho de nos da arvore e usar como tamanho;
-    char * str = malloc(40 * sizeof(char));
+    char * str = calloc(40, sizeof(char));
 
     criaStringArvore(l->inicio->arv, str);
 
-    printf("%s", str);
+
+    //printf("%s\n", str);
+
+    for(int i=0; i < strlen(str); i++){
+
+        if(str[i] == '1' || str[i] == '0'){
+
+            tamBitMap++;
+
+        } else {
+
+            tamBitMap = tamBitMap + 8; 
+
+        }
+
+    }
+
+
+    int tamMax = tamBitMap;
+    while(tamMax % 8 != 0){
+
+        tamMax++;
+
+    }
+
+    bitmap *bm = bitmapInit(tamMax);
+
+    for(int i=0; i < strlen(str); i++){
+
+        if(str[i] == '1' || str[i] == '0'){
+
+            bitmapAppendLeastSignificantBit(bm, str[i]);
+
+        } else {
+
+            for(int j=7; j >= 0; j--){
+
+                unsigned char charTemp = (str[i] >> j) & 1;
+                bitmapAppendLeastSignificantBit(bm, charTemp);
+
+            } 
+
+        }
+
+    }
+
+    FILE *fp = fopen("saida.txt", "wb");
+
+    fwrite(&tamBitMap, sizeof(int), 1, fp);
+    fwrite(&tamMax, sizeof(int), 1, fp);
+    fwrite(bitmapGetContents(bm), sizeof(char), tamMax/8, fp);
+
+    fclose(fp);
+
+    // FILE *fp2 = fopen("saida.txt", "rb");
+
+    // int tamTotal=0, tamUtil=0;
+
+    // fread(&tamUtil, sizeof(int), 1, fp2);
+    // fread(&tamTotal, sizeof(int), 1, fp2);
+
+    // printf("%d %d ", tamBitMap, tamMax);
+    // printf("%d %d", tamUtil, tamTotal);
 
     return str;
 

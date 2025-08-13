@@ -110,9 +110,11 @@ int main(){
 
     unsigned char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
 
+    fclose(fp);
+
     compactaArquivo(txtCodificado);
 
-    fclose(fp);
+    stringArvore(l);
 
     FILE *fp2 = fopen("saida.txt", "rb");
 
@@ -127,8 +129,14 @@ int main(){
 
     fread(strAux, sizeof(char), tamTotal/8, fp2);
 
-    imprimeLista(l);
-    stringArvore(l);
+    int tamTotal2=0, tamUtil2=0;
+
+    fread(&tamUtil2, sizeof(int), 1, fp2);
+    fread(&tamTotal2, sizeof(int), 1, fp2);
+
+    printf("%d %d\n", tamUtil2, tamTotal2);
+
+    //imprimeLista(l);
 
     fclose(fp2);
 
