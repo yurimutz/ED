@@ -259,7 +259,7 @@ char *stringArvore(Lista *l){
     criaStringArvore(l->inicio->arv, str);
 
 
-    printf("%s\n", str);
+    //printf("%s\n", str);
 
     for(int i=0; i < strlen(str); i++){
 

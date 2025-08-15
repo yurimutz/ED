@@ -85,6 +85,20 @@ void compactaArquivo(unsigned char *codificado){
 
 }
 
+bitmap *funcaoTeste(int tamUtil, int tamTotal, char *conteudo){
+
+    bitmap *bm = bitmapInit(tamTotal);
+
+    for(int i=0; i < tamTotal/8; i++){
+
+        appendNovo(bm, conteudo[i]);
+
+    }
+
+    return bm;
+
+}
+
 int main(){
 
     int *vetFreq = calloc(256, sizeof(int));
@@ -98,8 +112,6 @@ int main(){
     l = criaListaOrdenada(l, vetFreq);
 
     criaArvoreHuff(l);
-
-    //imprimeLista(l);
 
     //tamanho da arvore + espaco para o caractere "\0"
     int altura = retAlturaCelula(l) + 1;
@@ -125,22 +137,38 @@ int main(){
     fread(&tamUtil, sizeof(int), 1, fp2);
     fread(&tamTotal, sizeof(int), 1, fp2);
 
-    printf("%d %d\n", tamUtil, tamTotal);
+    //printf("%d %d\n", tamUtil, tamTotal);
 
     unsigned char *strAux = malloc((tamTotal+1) * sizeof(char));
 
-    fread(strAux, sizeof(char), tamTotal/8, fp2);
+    fread(strAux, sizeof(unsigned char), tamTotal/8, fp2);
 
     int tamTotal2=0, tamUtil2=0;
 
     fread(&tamUtil2, sizeof(int), 1, fp2);
     fread(&tamTotal2, sizeof(int), 1, fp2);
 
-    printf("%d %d\n", tamUtil2, tamTotal2);
+    unsigned char *stringDec = malloc(sizeof(tamTotal2+1) * sizeof(char));
 
+    fread(stringDec, sizeof(unsigned char), tamTotal2/8, fp2);
+
+    //printf("%s", stringDec);
+    //printf("%d %d\n", tamUtil2, tamTotal2);
+
+    bitmap *bitmapArv = funcaoTeste(tamUtil, tamTotal, strAux);
+
+    bitmap *bitmapString = funcaoTeste(tamUtil2, tamTotal2, stringDec);
+
+    int indice = 0;
+    Arv * arvNovo = recriaArvore(bitmapArv, &indice);
+
+    decodificaFinal2(arvNovo, bitmapString, tamUtil2);
+    //abb_imprime (arvNovo);
     //imprimeLista(l);
 
     fclose(fp2);
+
+    
 
     return 0;
 

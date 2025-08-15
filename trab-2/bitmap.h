@@ -17,6 +17,8 @@ unsigned int bitmapGetLength(bitmap* bm);
 bitmap* bitmapInit(unsigned int max_size);
 unsigned char bitmapGetBit(bitmap* bm, unsigned int index);
 void bitmapAppendLeastSignificantBit(bitmap* bm, unsigned char bit);
+void appendNovo(bitmap *bm, unsigned char byte);
 void bitmapLibera (bitmap* bm);
+unsigned char lerByteInteiro(bitmap* bm, unsigned int indice_inicial);
 
 #endif /*BITMAP_H_*/

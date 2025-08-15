@@ -124,6 +124,27 @@ void bitmapAppendLeastSignificantBit(bitmap* bm, unsigned char bit) {
 	bitmapSetBit(bm, bm->length-1, bit);
 }
 
+void appendNovo(bitmap *bm, unsigned char byte){
+
+	// 1. Garante que há espaço para mais 8 bits.
+    assert((bitmapGetLength(bm) + 8) <= bitmapGetMaxSize(bm), "Tamanho maximo excedido no mapa de bits.");
+
+    // 2. Itera por cada bit do byte, do mais significativo (MSB) para o menos significativo (LSB).
+    // O loop vai de 7 a 0 para pegar os bits na ordem correta (da esquerda para a direita).
+    for (int i = 7; i >= 0; i--) {
+        // 3. Isola o bit na posição 'i'.
+        //    (byte >> i) -> Desloca o bit de interesse para a posição mais à direita.
+        //    & 0x01    -> Zera todos os outros bits, deixando apenas o bit que queremos.
+        unsigned char bit = (byte >> i) & 0x01;
+
+        // 4. Adiciona o bit isolado ao final do bitmap usando a função existente.
+        //    Esta função já cuida de incrementar o bm->length e de setar o bit
+        //    na posição correta.
+        bitmapAppendLeastSignificantBit(bm, bit);
+    }
+
+}
+
 /**
  * Libera a memória dinâmica alocada para o mapa de bits.
  * @param bm O mapa de bits.
@@ -134,4 +155,12 @@ void bitmapLibera (bitmap* bm){
     free (bm);
 }
 
-
+unsigned char lerByteInteiro(bitmap* bm, unsigned int indice_inicial) {
+    assert((indice_inicial + 8) <= bitmapGetLength(bm), "Tentativa de ler alem dos limites do bitmap.");
+    unsigned char byte_resultante = 0;
+    for (int i = 0; i < 8; i++) {
+        unsigned char bit = bitmapGetBit(bm, indice_inicial + i);
+        byte_resultante = (byte_resultante << 1) | bit;
+    }
+    return byte_resultante;
+}

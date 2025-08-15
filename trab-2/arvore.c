@@ -48,105 +48,6 @@ void abb_imprime (Arv* a){
 
 }
 
-Arv* abb_busca (Arv* r, int v){
-
-    // if (r == NULL) {
-        
-    //     return NULL;
-
-    // }else if (retMat(r->info) > v){ 
-        
-    //     return abb_busca (r->esq, v);
-
-    // }else if (retMat(r->info) < v){
-        
-    //     return abb_busca (r->dir, v);
-
-    // }else{
-        
-    //     return r;
-    // }
-
-}
-
-Arv* abb_insere (Arv* a, Arv *info){
-
-    // if (a==NULL) {
-
-    //     a = (Arv*)malloc(sizeof(Arv));
-    //     //mexer
-    //     a->info = v;
-    //     a->esq = a->dir = NULL;
-    // }
-
-    // else if (retMat(v) < retMat(a->info)){
-
-    //     a->esq = abb_insere(a->esq,v);
-
-    // }else{ /* v < a->info */
-
-    //     a->dir = abb_insere(a->dir,v);
-
-    // }
-
-    // return a;
-}
-
-// Arv* abb_retira (Arv* r, int v){
-
-//     if (r == NULL){
-
-//         return NULL;
-
-//     }else if (retMat(r->info) > v){
-
-//         r->esq = abb_retira(r->esq, v);
-
-//     }else if (retMat(r->info) < v){
-
-//         r->dir = abb_retira(r->dir, v);
-
-//     }else { /* achou o nó a remover */
-//             /* nó sem filhos */
-//         if (r->esq == NULL && r->dir == NULL) {
-//             free (r);
-//             r = NULL;
-//         }
-//         /* nó só tem filho à direita */
-//         else if (r->esq == NULL) {
-//             Arv* t = r;
-//             r = r->dir;
-//             free (t);
-//         }
-//         /* só tem filho à esquerda */
-//         else if (r->dir == NULL) {
-//             Arv* t = r;
-//             r = r->esq;
-//             free (t);
-//         }
-//         /* nó tem os dois filhos */
-//         else {
-
-//             Arv* f = r->esq;
-
-//             while (f->dir != NULL) {
-
-//                 f = f->dir;
-
-//             }
-
-//             r->info = f->info; /* troca as informações */
-//             f->info = mudaMat(f->info, v);
-//             r->esq = abb_retira(r->esq,v);
-
-//             }
-
-//     }
-
-//     return r;
-
-// }
-
 Arv* abb_libera (Arv* a){
 
     if (a != NULL){
@@ -282,5 +183,70 @@ char *decodificaFinal(Arv *a, char *txtCodificado, FILE *fp){
     decodificado[tamDecodificado] = '\0';
 
     return decodificado;
+
+}
+
+char *decodificaFinal2(Arv *a, bitmap *bm, int tamUtil){
+
+    Arv *aux = a;
+
+    int tamDecodificado = 0;
+
+    char *decodificado = malloc((tamUtil+1) * sizeof(char));
+
+    for(int i=0; i < tamUtil; i++){
+
+        if(bitmapGetBit(bm, i) == 0 ){
+
+            aux = aux->esq;
+
+        } else if(bitmapGetBit(bm, i) == 1 ){
+
+            aux = aux->dir;
+
+        }
+
+        if(aux->dir == NULL && aux->esq == NULL){
+
+            decodificado[tamDecodificado] = aux->carac;
+            tamDecodificado++;
+
+            aux = a;
+
+        }
+
+    }
+
+    decodificado[tamDecodificado] = '\0';
+
+    printf("%s", decodificado);
+
+    return decodificado;
+
+
+}
+
+Arv *recriaArvore(bitmap *bm, int *tamAtual){
+
+    if(bitmapGetBit(bm, *tamAtual) == 0){
+
+        (*tamAtual)++;
+
+        Arv* esq = recriaArvore(bm, tamAtual);
+        Arv* dir = recriaArvore(bm, tamAtual);
+
+        return arvCriaNaoVazia(esq, dir);
+
+    } else {
+
+        (*tamAtual)++;
+
+        unsigned char carac = lerByteInteiro(bm, *tamAtual);
+
+        (*tamAtual) = *(tamAtual) + 8;
+
+        return arv_cria(0, carac);
+
+    }
 
 }

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "bitmap.h"
 
 typedef struct arv Arv;
 
@@ -14,12 +15,6 @@ Arv* arv_cria (int frequencia, char carac);
 Arv* arvCriaNaoVazia(Arv *esq, Arv *dir);
 
 void abb_imprime (Arv* a);
-
-Arv* abb_busca (Arv* r, int v);
-
-Arv* abb_insere (Arv* a, Arv *info);
-
-//Arv* abb_retira (Arv* r, int v);
 
 void arv_imprime (Arv* a);
 
@@ -36,5 +31,9 @@ void preencheDicionario(unsigned char **dic, Arv *a, char *conteudo, int altura)
 void criaStringArvore(Arv* a, char* conteudo);
 
 char *decodificaFinal(Arv *a, char *txtCodificado, FILE *fp);
+
+char *decodificaFinal2(Arv *a, bitmap *bm, int tamUtil);
+
+Arv *recriaArvore(bitmap *bm, int *tamAtual);
 
 #endif 
