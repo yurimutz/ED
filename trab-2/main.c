@@ -71,7 +71,7 @@ void compactaArquivo(unsigned char *codificado){
 
     }
 
-    FILE *fp = fopen("saida.txt", "wb");
+    FILE *fp = fopen("saida.txt", "ab");
 
     int tamAux = strlen(codificado);
 
@@ -108,13 +108,15 @@ int main(){
 
     unsigned char *txtCodificado = codificaArquivo(dicionario, fp);
 
+    //printf("%s\n", txtCodificado);
+
     unsigned char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
 
     fclose(fp);
 
-    compactaArquivo(txtCodificado);
-
     stringArvore(l);
+
+    compactaArquivo(txtCodificado);
 
     FILE *fp2 = fopen("saida.txt", "rb");
 
