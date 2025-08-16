@@ -8,7 +8,7 @@
 void leArquivo(int *vetFreq, FILE *fp){
 
     unsigned char aux;
-    while(fread(&aux, sizeof(char), 1, fp) == 1){
+    while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
         
         vetFreq[aux]++;
         
@@ -16,14 +16,15 @@ void leArquivo(int *vetFreq, FILE *fp){
 
 }
 
-int descobreTamString(FILE *fp, unsigned char **dic){
+unsigned int descobreTamString(FILE *fp, unsigned char **dic, unsigned int altura){
 
-    int tam = 0;
+    unsigned int tam = 0;
 
     unsigned char aux;
-    while(fread(&aux, sizeof(char), 1, fp) == 1){
+    while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
         
-        tam = tam + strlen(dic[aux]);
+        //tam = tam + strlen(dic[aux]);
+        tam = tam + altura;
         
     }
 
@@ -32,22 +33,45 @@ int descobreTamString(FILE *fp, unsigned char **dic){
 
 }
 
-unsigned char *codificaArquivo(unsigned char **dic, FILE *fp){
+unsigned char *codificaArquivo(unsigned char **dic, FILE *fp, unsigned int altura){
 
     fseek(fp, 0, SEEK_SET);
 
-    unsigned char *txtCodificado = calloc(descobreTamString(fp, dic), sizeof(char));
+    unsigned char *txtCodificado = calloc(descobreTamString(fp, dic, altura)+1, sizeof(char));
 
+    // fseek(fp, 0, SEEK_SET);
+
+    // unsigned char aux;
+    // while(fread(&aux, sizeof(char), 1, fp) == 1){
+        
+    //     strcat(txtCodificado, dic[aux]);
+           
+    // }
+
+    // return txtCodificado;
+
+    //3. [A GRANDE MUDANÇA] Cria um ponteiro para a posição atual de escrita
+    unsigned char *ponteiro_atual = txtCodificado;
+
+    // 4. Segunda passada para codificar
     fseek(fp, 0, SEEK_SET);
+    
+    unsigned char aux;
+    while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
+        // Pega o código de Huffman para o caractere lido
+        unsigned char* codigo = dic[aux];
+        int tam_codigo = strlen(codigo);
 
-    char aux;
-    while(fread(&aux, sizeof(char), 1, fp) == 1){
+        // 5. [A GRANDE MUDANÇA] Copia o código diretamente para a posição atual
+        memcpy(ponteiro_atual, codigo, tam_codigo);
         
-        strcat(txtCodificado, dic[aux]);
-        
+        // 6. Avança o ponteiro para o final dos dados recém-copiados
+        ponteiro_atual += tam_codigo;
     }
 
+    // O '\0' final já está garantido pelo uso do calloc
     return txtCodificado;
+
 
 }
 
@@ -55,17 +79,18 @@ void compactaArquivo(unsigned char *codificado){
 
     int j=0;
 
-    unsigned int tam = strlen(codificado);
+    unsigned int tamUtil = strlen(codificado);
 
-    while(tam % 8 != 0){
+    unsigned tamTotal = tamUtil;
+    while(tamTotal % 8 != 0){
 
-        tam++;
+        tamTotal++;
 
     }
 
-    bitmap *bitmap = bitmapInit(tam);
+    bitmap *bitmap = bitmapInit(tamTotal);
 
-    for(int i=0; i < strlen(codificado); i++){
+    for(int i=0; i < tamUtil; i++){
 
         bitmapAppendLeastSignificantBit(bitmap, codificado[i]);
 
@@ -73,23 +98,22 @@ void compactaArquivo(unsigned char *codificado){
 
     FILE *fp = fopen("saida.txt", "ab");
 
-    int tamAux = strlen(codificado);
-
     //tamanho util do dado compactado
-    fwrite(&tamAux, sizeof(int), 1, fp);
+    fwrite(&tamUtil, sizeof(int), 1, fp);
     //tamanho total do dado compactado (multiplo de 8 para formar bytes);
-    fwrite(&tam, sizeof(int), 1, fp);
-    fwrite(bitmapGetContents(bitmap), sizeof(char), tam/8, fp);
+    fwrite(&tamTotal, sizeof(int), 1, fp);
+    fwrite(bitmapGetContents(bitmap), sizeof(char), tamTotal/8, fp);
 
+    bitmapLibera(bitmap);
     fclose(fp);
 
 }
 
-bitmap *funcaoTeste(int tamUtil, int tamTotal, char *conteudo){
+bitmap *funcaoTeste(unsigned int tamUtil, unsigned int tamTotal, unsigned char *conteudo){
 
-    bitmap *bm = bitmapInit(tamTotal);
+    bitmap *bm = bitmapInit(tamTotal+1);
 
-    for(int i=0; i < tamTotal/8; i++){
+    for(unsigned int i=0; i < tamTotal/8; i++){
 
         appendNovo(bm, conteudo[i]);
 
@@ -99,11 +123,34 @@ bitmap *funcaoTeste(int tamUtil, int tamTotal, char *conteudo){
 
 }
 
-int main(){
+void liberaStrings(unsigned char **str){
 
-    int *vetFreq = calloc(256, sizeof(int));
+    
+    for(unsigned int i=0; i < 256; i++){
 
-    FILE *fp = fopen("entrada.txt", "r");
+        free(str[i]);
+
+    }
+
+    free(str);
+
+}
+
+int main(int argc, char *argv[]){
+
+    if(argc<2){
+        printf("Informe o diretorio\n");
+        return 1;
+    }
+
+    char *dir = malloc(1000 * sizeof(char));
+    sprintf(dir, "%s", argv[1]);
+    //printf("%s", dir);
+
+    unsigned int *vetFreq = calloc(256, sizeof(int));
+
+    //FILE *fp = fopen("entrada.txt", "r");
+    FILE *fp = fopen(dir, "r");
 
     leArquivo(vetFreq, fp);
 
@@ -114,15 +161,11 @@ int main(){
     criaArvoreHuff(l);
 
     //tamanho da arvore + espaco para o caractere "\0"
-    int altura = retAlturaCelula(l) + 1;
+    unsigned int altura = retAlturaCelula(l) + 1;
 
     unsigned char **dicionario = criaDicionario(l, altura);
 
-    unsigned char *txtCodificado = codificaArquivo(dicionario, fp);
-
-    //printf("%s\n", txtCodificado);
-
-    unsigned char *txtDecodificado = decodificaArquivo(l, txtCodificado, fp);
+    unsigned char *txtCodificado = codificaArquivo(dicionario, fp, altura);
 
     fclose(fp);
 
@@ -132,43 +175,45 @@ int main(){
 
     FILE *fp2 = fopen("saida.txt", "rb");
 
-    int tamTotal=0, tamUtil=0;
+    unsigned int tamTotal=0, tamUtil=0;
 
-    fread(&tamUtil, sizeof(int), 1, fp2);
-    fread(&tamTotal, sizeof(int), 1, fp2);
+    fread(&tamUtil, sizeof(unsigned int), 1, fp2);
+    fread(&tamTotal, sizeof(unsigned int), 1, fp2);
 
-    //printf("%d %d\n", tamUtil, tamTotal);
-
-    unsigned char *strAux = malloc((tamTotal+1) * sizeof(char));
+    unsigned char *strAux = malloc((tamTotal+1) * sizeof(unsigned char));
 
     fread(strAux, sizeof(unsigned char), tamTotal/8, fp2);
 
-    int tamTotal2=0, tamUtil2=0;
+    unsigned int tamTotal2=0, tamUtil2=0;
 
-    fread(&tamUtil2, sizeof(int), 1, fp2);
-    fread(&tamTotal2, sizeof(int), 1, fp2);
+    fread(&tamUtil2, sizeof(unsigned int), 1, fp2);
+    fread(&tamTotal2, sizeof(unsigned int), 1, fp2);
 
-    unsigned char *stringDec = malloc(sizeof(tamTotal2+1) * sizeof(char));
+    unsigned char *stringDec = malloc((tamTotal2+1) * sizeof(unsigned char));
 
     fread(stringDec, sizeof(unsigned char), tamTotal2/8, fp2);
-
-    //printf("%s", stringDec);
-    //printf("%d %d\n", tamUtil2, tamTotal2);
 
     bitmap *bitmapArv = funcaoTeste(tamUtil, tamTotal, strAux);
 
     bitmap *bitmapString = funcaoTeste(tamUtil2, tamTotal2, stringDec);
 
-    int indice = 0;
-    Arv * arvNovo = recriaArvore(bitmapArv, &indice);
+    unsigned int indice = 0;
+    Arv * arvNovo = recriaArvore(bitmapArv, &indice, tamUtil);
 
     decodificaFinal2(arvNovo, bitmapString, tamUtil2);
-    //abb_imprime (arvNovo);
-    //imprimeLista(l);
 
     fclose(fp2);
 
-    
+    liberaStrings(dicionario);
+    free(txtCodificado);
+    free(strAux);
+    free(stringDec);
+    bitmapLibera(bitmapString);
+    bitmapLibera(bitmapArv);
+    liberaLista(l);
+    abb_libera(arvNovo);
+    free(vetFreq);
+    free(dir);
 
     return 0;
 

@@ -10,7 +10,7 @@ typedef struct arv Arv;
 
 Arv *abb_criaVazia();
 
-Arv* arv_cria (int frequencia, char carac);
+Arv* arv_cria (unsigned int frequencia, unsigned char carac);
 
 Arv* arvCriaNaoVazia(Arv *esq, Arv *dir);
 
@@ -20,20 +20,22 @@ void arv_imprime (Arv* a);
 
 Arv* abb_libera (Arv* a);
 
-int retFrequencia(Arv *a);
+unsigned int retFrequencia(Arv *a);
 
-char retCarac(Arv *a);
+unsigned char retCarac(Arv *a);
 
-int altura(Arv* a);
+unsigned int altura(Arv* a);
 
-void preencheDicionario(unsigned char **dic, Arv *a, char *conteudo, int altura);
+void preencheDicionario(unsigned char **dic, Arv *a, unsigned char *conteudo, unsigned int altura);
 
-void criaStringArvore(Arv* a, char* conteudo);
+void criaStringArvore(Arv* a, unsigned char* conteudo);
 
-char *decodificaFinal(Arv *a, char *txtCodificado, FILE *fp);
+unsigned char *decodificaFinal(Arv *a, unsigned char *txtCodificado, FILE *fp);
 
-char *decodificaFinal2(Arv *a, bitmap *bm, int tamUtil);
+unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil);
 
-Arv *recriaArvore(bitmap *bm, int *tamAtual);
+Arv *recriaArvore(bitmap *bm, unsigned int *tamAtual, unsigned int tamUtil);
+
+unsigned int calculaTamanhoArvore(Arv* a);
 
 #endif 

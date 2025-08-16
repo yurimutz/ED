@@ -25,14 +25,14 @@ void insereCelulasHuff(Lista *l, Celula *esq, Celula *dir);
 
 void criaArvoreHuff(Lista *l);
 
-int retAlturaCelula(Lista *l);
+unsigned int retAlturaCelula(Lista *l);
 
-unsigned char **criaDicionario(Lista *a, int altura);
+unsigned char **criaDicionario(Lista *a, unsigned int altura);
 
-char *stringArvore(Lista *l);
+void stringArvore(Lista *l);
 
-Lista *criaListaOrdenada(Lista *l, int *vetFreq);
+Lista *criaListaOrdenada(Lista *l, unsigned int *vetFreq);
 
-unsigned char *decodificaArquivo(Lista *l, char *txt, FILE *fp);
+unsigned char *decodificaArquivo(Lista *l, unsigned char *txt, FILE *fp);
 
 #endif
