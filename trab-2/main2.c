@@ -32,6 +32,13 @@ int main(int argc, char *argv[]){
     //FILE *fp2 = fopen("saida.txt", "rb");
     FILE *fp2 = fopen(dir, "rb");
 
+    if(fp2 == NULL){
+
+        printf("deu ruim\n");
+        return 1;
+
+    }
+
     unsigned int tamTotal=0, tamUtil=0;
 
     fread(&tamUtil, sizeof(unsigned int), 1, fp2);
@@ -56,6 +63,11 @@ int main(int argc, char *argv[]){
 
     unsigned int indice = 0;
     Arv * arvNovo = recriaArvore(bitmapArv, &indice, tamUtil);
+
+    size_t len = strlen(dir);
+    const char *sufixo = ".comp";
+    size_t len_sufixo = strlen(sufixo);
+    dir[len - len_sufixo] = '\0';
 
     decodificaFinal2(arvNovo, bitmapString, tamUtil2, dir);
 

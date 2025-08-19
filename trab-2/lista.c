@@ -250,7 +250,7 @@ unsigned char **criaDicionario(Lista *a, unsigned int altura){
 
 }
 
-void stringArvore(Lista *l){
+void stringArvore(Lista *l, char *dir){
 
     // unsigned int tamBitMap=0;
 
@@ -374,8 +374,10 @@ void stringArvore(Lista *l){
         }
     }
     // ------------------------------------
-
-    FILE *fp = fopen("saida.txt", "wb");
+    
+    sprintf(dir, "%s%s", dir, ".comp");
+    //FILE *fp = fopen("saida.txt", "wb");
+    FILE *fp = fopen(dir, "wb");
     if (fp == NULL) {
         perror("Erro ao abrir saida.txt");
         free(str);

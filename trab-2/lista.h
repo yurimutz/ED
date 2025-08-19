@@ -29,7 +29,7 @@ unsigned int retAlturaCelula(Lista *l);
 
 unsigned char **criaDicionario(Lista *a, unsigned int altura);
 
-void stringArvore(Lista *l);
+void stringArvore(Lista *l, char *dir);
 
 Lista *criaListaOrdenada(Lista *l, unsigned int *vetFreq);
 

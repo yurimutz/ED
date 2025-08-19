@@ -77,7 +77,7 @@ unsigned char *codificaArquivo(unsigned char **dic, FILE *fp, unsigned int altur
 
 }
 
-void compactaArquivo(unsigned char *codificado){
+void compactaArquivo(unsigned char *codificado, char *dir){
 
     int j=0;
 
@@ -98,7 +98,8 @@ void compactaArquivo(unsigned char *codificado){
 
     }
 
-    FILE *fp = fopen("saida.txt", "ab");
+    //FILE *fp = fopen("saida.txt", "ab");
+    FILE *fp = fopen(dir, "ab");
 
     //tamanho util do dado compactado
     fwrite(&tamUtil, sizeof(unsigned int), 1, fp);
@@ -156,9 +157,9 @@ int main(int argc, char *argv[]){
 
     fclose(fp);
 
-    stringArvore(l);
+    stringArvore(l, dir);
 
-    compactaArquivo(txtCodificado);
+    compactaArquivo(txtCodificado, dir);
 
     liberaStrings(dicionario);
     free(txtCodificado);
