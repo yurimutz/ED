@@ -5,15 +5,17 @@
 #include "bitmap.h"
 #include "lista.h"
 
-void leArquivo(int *vetFreq, FILE *fp){
+void leArquivo(unsigned int *vetFreq, FILE *fp){
 
+    unsigned int teste = 0;
     unsigned char aux;
     while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
         
         vetFreq[aux]++;
+        teste++;
         
     }
-
+    //printf("%d ", teste);
 }
 
 unsigned int descobreTamString(FILE *fp, unsigned char **dic, unsigned int altura){
@@ -99,27 +101,13 @@ void compactaArquivo(unsigned char *codificado){
     FILE *fp = fopen("saida.txt", "ab");
 
     //tamanho util do dado compactado
-    fwrite(&tamUtil, sizeof(int), 1, fp);
+    fwrite(&tamUtil, sizeof(unsigned int), 1, fp);
     //tamanho total do dado compactado (multiplo de 8 para formar bytes);
-    fwrite(&tamTotal, sizeof(int), 1, fp);
+    fwrite(&tamTotal, sizeof(unsigned int), 1, fp);
     fwrite(bitmapGetContents(bitmap), sizeof(char), tamTotal/8, fp);
 
     bitmapLibera(bitmap);
     fclose(fp);
-
-}
-
-bitmap *funcaoTeste(unsigned int tamUtil, unsigned int tamTotal, unsigned char *conteudo){
-
-    bitmap *bm = bitmapInit(tamTotal+1);
-
-    for(unsigned int i=0; i < tamTotal/8; i++){
-
-        appendNovo(bm, conteudo[i]);
-
-    }
-
-    return bm;
 
 }
 
@@ -145,12 +133,11 @@ int main(int argc, char *argv[]){
 
     char *dir = malloc(1000 * sizeof(char));
     sprintf(dir, "%s", argv[1]);
-    //printf("%s", dir);
 
     unsigned int *vetFreq = calloc(256, sizeof(int));
 
     //FILE *fp = fopen("entrada.txt", "r");
-    FILE *fp = fopen(dir, "r");
+    FILE *fp = fopen(dir, "rb");
 
     leArquivo(vetFreq, fp);
 
@@ -173,45 +160,9 @@ int main(int argc, char *argv[]){
 
     compactaArquivo(txtCodificado);
 
-    FILE *fp2 = fopen("saida.txt", "rb");
-
-    unsigned int tamTotal=0, tamUtil=0;
-
-    fread(&tamUtil, sizeof(unsigned int), 1, fp2);
-    fread(&tamTotal, sizeof(unsigned int), 1, fp2);
-
-    unsigned char *strAux = malloc((tamTotal+1) * sizeof(unsigned char));
-
-    fread(strAux, sizeof(unsigned char), tamTotal/8, fp2);
-
-    unsigned int tamTotal2=0, tamUtil2=0;
-
-    fread(&tamUtil2, sizeof(unsigned int), 1, fp2);
-    fread(&tamTotal2, sizeof(unsigned int), 1, fp2);
-
-    unsigned char *stringDec = malloc((tamTotal2+1) * sizeof(unsigned char));
-
-    fread(stringDec, sizeof(unsigned char), tamTotal2/8, fp2);
-
-    bitmap *bitmapArv = funcaoTeste(tamUtil, tamTotal, strAux);
-
-    bitmap *bitmapString = funcaoTeste(tamUtil2, tamTotal2, stringDec);
-
-    unsigned int indice = 0;
-    Arv * arvNovo = recriaArvore(bitmapArv, &indice, tamUtil);
-
-    decodificaFinal2(arvNovo, bitmapString, tamUtil2);
-
-    fclose(fp2);
-
     liberaStrings(dicionario);
     free(txtCodificado);
-    free(strAux);
-    free(stringDec);
-    bitmapLibera(bitmapString);
-    bitmapLibera(bitmapArv);
     liberaLista(l);
-    abb_libera(arvNovo);
     free(vetFreq);
     free(dir);
 

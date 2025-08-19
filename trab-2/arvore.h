@@ -32,10 +32,12 @@ void criaStringArvore(Arv* a, unsigned char* conteudo);
 
 unsigned char *decodificaFinal(Arv *a, unsigned char *txtCodificado, FILE *fp);
 
-unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil);
+unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil, char *dir);
 
 Arv *recriaArvore(bitmap *bm, unsigned int *tamAtual, unsigned int tamUtil);
 
 unsigned int calculaTamanhoArvore(Arv* a);
+
+void criaStringArvore_Manual(Arv* a, unsigned char* buffer, unsigned int* indice);
 
 #endif 

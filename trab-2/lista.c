@@ -252,63 +252,136 @@ unsigned char **criaDicionario(Lista *a, unsigned int altura){
 
 void stringArvore(Lista *l){
 
-    unsigned int tamBitMap=0;
+    // unsigned int tamBitMap=0;
 
-    //preciso fazer uma funcao pra ver o tamanho de nos da arvore e usar como tamanho;
-    unsigned char * str = calloc(calculaTamanhoArvore(l->inicio->arv), sizeof(unsigned char));
+    // //preciso fazer uma funcao pra ver o tamanho de nos da arvore e usar como tamanho;
+    // unsigned char * str = calloc(calculaTamanhoArvore(l->inicio->arv), sizeof(unsigned char));
 
-    criaStringArvore(l->inicio->arv, str);
+    // criaStringArvore(l->inicio->arv, str);
 
 
-    //printf("%s\n", str);
+    // //printf("%s\n", str);
 
-    for(unsigned int i=0; i < strlen(str); i++){
+    // for(unsigned int i=0; i < strlen(str); i++){
 
-        if(/*str[i] == '1' ||*/ str[i] == '0'){
+    //     if(/*str[i] == '1' ||*/ str[i] == '0'){
 
+    //         tamBitMap++;
+
+    //     } else {
+
+    //         tamBitMap = tamBitMap + 8; 
+
+    //     }
+
+    // }
+
+
+    // unsigned int tamMax = tamBitMap;
+    // while(tamMax % 8 != 0){
+
+    //     tamMax++;
+
+    // }
+
+    // bitmap *bm = bitmapInit(tamMax);
+
+    // unsigned int indice = strlen(str);
+    // for(unsigned int i=0; i < indice; i++){
+
+    //     if( str[i] == '0'){
+
+    //         bitmapAppendLeastSignificantBit(bm, str[i]);
+
+    //     } else {
+
+    //         bitmapAppendLeastSignificantBit(bm, str[i]);
+    //         i++;
+    //         for(int j=7; j >= 0; j--){
+
+    //             unsigned char charTemp = (str[i] >> j) & 1;
+    //             bitmapAppendLeastSignificantBit(bm, charTemp);
+
+    //         } 
+
+    //     }
+
+    // }
+
+    // FILE *fp = fopen("saida.txt", "wb");
+
+    // fwrite(&tamBitMap, sizeof(unsigned int), 1, fp);
+    // fwrite(&tamMax, sizeof(unsigned int), 1, fp);
+    // fwrite(bitmapGetContents(bm), sizeof(unsigned char), tamMax/8, fp);
+
+    // bitmapLibera(bm);
+    // fclose(fp);
+    // free(str);
+
+    // // FILE *fp2 = fopen("saida.txt", "rb");
+
+    // // int tamTotal=0, tamUtil=0;
+
+    // // fread(&tamUtil, sizeof(int), 1, fp2);
+    // // fread(&tamTotal, sizeof(int), 1, fp2);
+
+    // // printf("%d %d ", tamBitMap, tamMax);
+    // // printf("%d %d", tamUtil, tamTotal);
+    if (l == NULL || l->inicio == NULL) return;
+
+    unsigned int tamanhoMaximoBuffer = calculaTamanhoArvore(l->inicio->arv);
+    unsigned char *str = calloc(tamanhoMaximoBuffer + 1, sizeof(unsigned char));
+
+    unsigned int indice_final = 0;
+    // Função auxiliar que criamos na etapa anterior (está em arvore.c)
+    criaStringArvore_Manual(l->inicio->arv, str, &indice_final);
+
+    unsigned int tamBitMap = 0;
+    unsigned int i_calc = 0;
+    while(i_calc < indice_final) {
+        if (str[i_calc] == '0') {
             tamBitMap++;
-
-        } else {
-
-            tamBitMap = tamBitMap + 8; 
-
+            i_calc++;
+        } else if (str[i_calc] == '1') {
+            tamBitMap += 9; // 1 bit para o '1' + 8 bits para o caractere
+            i_calc += 2; // Pula o '1' e o caractere
         }
-
     }
-
 
     unsigned int tamMax = tamBitMap;
     while(tamMax % 8 != 0){
-
         tamMax++;
-
     }
 
     bitmap *bm = bitmapInit(tamMax);
 
-    unsigned int indice = strlen(str);
-    for(unsigned int i=0; i < indice; i++){
-
-        if( str[i] == '0'){
-
-            bitmapAppendLeastSignificantBit(bm, str[i]);
-
-        } else {
-
-            bitmapAppendLeastSignificantBit(bm, str[i]);
-            i++;
-            for(int j=7; j >= 0; j--){
-
-                unsigned char charTemp = (str[i] >> j) & 1;
-                bitmapAppendLeastSignificantBit(bm, charTemp);
-
-            } 
-
+    // --- LAÇO CORRIGIDO USANDO 'while' ---
+    unsigned int i = 0;
+    while (i < indice_final) {
+        if (str[i] == '0') {
+            bitmapAppendLeastSignificantBit(bm, 0);
+            i++; // Avança 1 posição
+        } else if (str[i] == '1') {
+            bitmapAppendLeastSignificantBit(bm, 1);
+            i++; // Avança para o byte do caractere
+            
+            // Adiciona os 8 bits do caractere
+            for (int j = 7; j >= 0; j--) {
+                unsigned char bit = (str[i] >> j) & 1;
+                bitmapAppendLeastSignificantBit(bm, bit);
+            }
+            i++; // Avança para depois do caractere
         }
-
     }
+    // ------------------------------------
 
     FILE *fp = fopen("saida.txt", "wb");
+    if (fp == NULL) {
+        perror("Erro ao abrir saida.txt");
+        free(str);
+        bitmapLibera(bm);
+        return;
+    }
 
     fwrite(&tamBitMap, sizeof(unsigned int), 1, fp);
     fwrite(&tamMax, sizeof(unsigned int), 1, fp);
@@ -317,17 +390,6 @@ void stringArvore(Lista *l){
     bitmapLibera(bm);
     fclose(fp);
     free(str);
-
-    // FILE *fp2 = fopen("saida.txt", "rb");
-
-    // int tamTotal=0, tamUtil=0;
-
-    // fread(&tamUtil, sizeof(int), 1, fp2);
-    // fread(&tamTotal, sizeof(int), 1, fp2);
-
-    // printf("%d %d ", tamBitMap, tamMax);
-    // printf("%d %d", tamUtil, tamTotal);
-
 }
 
 Lista *criaListaOrdenada(Lista *l, unsigned int *vetFreq){

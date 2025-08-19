@@ -198,7 +198,7 @@ unsigned char *decodificaFinal(Arv *a, unsigned char *txtCodificado, FILE *fp){
 
 }
 
-unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil){
+unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil, char *dir){
 
     Arv *aux = a;
 
@@ -229,14 +229,10 @@ unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil){
         }
 
     }
-
-    decodificado[tamDecodificado] = '\0';
     
-    // FILE *teste = fopen("rec.png", "wb");
-    // fwrite(decodificado, sizeof(unsigned char), strlen(decodificado), teste);
-    // fclose(teste);
-
-    printf("%s", decodificado);
+    FILE *teste = fopen(dir, "wb");
+    fwrite(decodificado, sizeof(unsigned char), tamDecodificado, teste);
+    fclose(teste);
     
     //se precisar da string eu tiro isso;
     free(decodificado);
@@ -297,3 +293,24 @@ unsigned int calculaTamanhoArvore(Arv* a) {
     return 1 + tamanhoEsq + tamanhoDir;
 }
 
+// Adicione esta nova função em arvore.c
+void criaStringArvore_Manual(Arv* a, unsigned char* buffer, unsigned int* indice) {
+    if (a == NULL) {
+        return;
+    }
+
+    // Se é um nó folha
+    if (a->esq == NULL && a->dir == NULL) {
+        buffer[*indice] = '1';
+        (*indice)++;
+        buffer[*indice] = a->carac; // Adiciona o byte do caractere diretamente
+        (*indice)++;
+    } 
+    // Se é um nó interno
+    else {
+        buffer[*indice] = '0';
+        (*indice)++;
+        criaStringArvore_Manual(a->esq, buffer, indice);
+        criaStringArvore_Manual(a->dir, buffer, indice);
+    }
+}
