@@ -28,17 +28,51 @@ Aluno *criaALuno(char *nome, int faltas, int pres){
 Aluno *leAluno(FILE *fp){
 
     char nome[50];
-    fscanf(fp, "%[^ ]", nome);
-    fscanf(fp, "%*[ ]");
+    char tipo;
+    char aux[50];
+    char lixo;
+
+    fscanf(fp, "%[^\n]", aux);
+    fscanf(fp, "%*[\n]");
+    //printf("%s\n", aux);
+
+    sscanf(aux, "%s %c", nome, &tipo);
+
+    //printf("%s %c\n", nome, tipo);
 
     char *nomeDin = strdup(nome);
 
-    int faltas=0, pres=0;
-    char lixo1, lixo2;
-    fscanf(fp, "%d%c %d%c", &pres, &lixo1, &faltas, &lixo2);
-    fscanf(fp, "%*c");
+    Aluno *aluno;
 
-    Aluno *aluno = criaALuno(nomeDin, faltas, pres);
+    if(tipo == 'P'){
+    
+        aluno = criaALuno(nomeDin, 0, 1);
+
+    } else {
+
+        aluno = criaALuno(nomeDin, 1, 0);
+
+    }
+
+    //imprimeAluno(aluno);
+
+    return aluno;
+}
+
+Aluno *leAluno2(FILE *fp){
+
+    char nome[50];
+    fscanf(fp, "%[^\n]", nome);
+    fscanf(fp, "%*[\n]");
+
+    char *nomeDin = strdup(nome);
+
+    //int faltas=0, pres=0;
+    //char lixo1, lixo2;
+    //fscanf(fp, "%d%c %d%c", &pres, &lixo1, &faltas, &lixo2);
+    //fscanf(fp, "%*c");
+
+    Aluno *aluno = criaALuno(nomeDin, 0, 0);
 
     return aluno;
 }
@@ -111,5 +145,43 @@ void atualizaProxAluno(Aluno *a, Aluno *b){
 void atualizaProxComNULL(Aluno *a){
 
     a->prox = NULL;
+
+}
+
+int compara(const void *a1, const void *a2){
+
+    const Aluno **aux1 = (Aluno**)a1;
+    const Aluno **aux2 = (Aluno**)a2;
+
+    const Aluno *ret1 = *aux1;
+    const Aluno *ret2 = *aux2;
+
+    return strcmp(ret1->nome, ret2->nome);
+
+}
+
+void imprimeVet(Aluno **vet, int tam){
+
+    FILE *fp = fopen("saida.txt", "w");
+
+    for(int i=0; i < tam; i++){
+
+        fprintf(fp, "%s %dP %dF\n", vet[i]->nome, vet[i]->pres, vet[i]->faltas);
+
+    }
+
+    fclose(fp);
+
+}
+
+void liberaVet(Aluno **vet, int tam){
+
+    for(int i=0; i<tam; i++){
+
+        liberaAluno(vet[i]);
+
+    }
+
+    free(vet);
 
 }

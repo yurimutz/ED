@@ -149,3 +149,69 @@ void liberaHash(Hash *tab){
     free(tab);
 
 }
+
+Aluno **criarVetordenado(Hash *tab){
+
+    int indice=0;
+
+    Aluno **vet = malloc(tab->n * sizeof(Aluno*));
+
+    for(int i=0; i < tab->dim; i++){
+
+        if(tab->alunos[i] != NULL){
+
+            vet[indice] = tab->alunos[i];
+            indice++;
+
+            Aluno *prox = retProxAluno(tab->alunos[i]);
+
+            while(prox != NULL){
+
+                vet[indice] = prox;
+                indice++;
+
+                prox = retProxAluno(prox);
+
+            }
+
+        }
+
+    }
+
+    qsort(vet, tab->n, sizeof(Aluno*), compara);
+
+    return vet;
+
+}
+
+int retN(Hash *tab){
+
+    return tab->n;
+
+}
+
+void printaHashMap(Hash* tab){
+
+    Aluno *prox = NULL;
+
+    for(int i=0; i < tab->dim; i++){
+
+        if(tab->alunos[i] != NULL){
+
+            imprimeAluno(tab->alunos[i]);
+
+            prox = retProxAluno(tab->alunos[i]);
+
+            while(prox != NULL){
+
+                imprimeAluno(prox);
+
+                prox = retProxAluno(prox);
+
+            }
+
+        }
+
+    }
+
+}

@@ -15,4 +15,10 @@ static void redimensiona (Hash* tab);
 
 void liberaHash(Hash *tab);
 
+Aluno **criarVetordenado(Hash *tab);
+
+int retN(Hash *tab);
+
+void printaHashMap(Hash* tab);
+
 #endif

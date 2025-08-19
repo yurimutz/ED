@@ -18,12 +18,44 @@ int main(){
 
     while(!feof(fp)){
 
-        Aluno*aluno = leAluno(fp);
-        //imprimeAluno(aluno);
+        Aluno*aluno = leAluno2(fp);
 
         hsh_insere(tab, aluno);
 
     }
+
+    fclose(fp);
+
+    for(int i=1; i <= numAulas; i++){
+
+        char dir[50];
+        char ent[50] = "entrada";
+        char txt[50] = ".txt";
+        sprintf(dir, "%s%d%s", ent, i, txt);
+
+        FILE *fp2 = fopen(dir, "r");
+
+        while(!feof(fp2)){
+
+            Aluno*aluno = leAluno(fp2);
+
+            hsh_insere(tab, aluno);
+
+        }
+        
+        fclose(fp2);
+
+    }
+
+    Aluno **vet = criarVetordenado(tab);
+
+    int tam = retN(tab);
+
+    imprimeVet(vet, tam);
+
+    liberaHash(tab);
+
+    liberaVet(vet, tam);
 
     return 0;
  
