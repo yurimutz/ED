@@ -71,6 +71,8 @@ int main(int argc, char *argv[]){
 
     decodificaFinal2(arvNovo, bitmapString, tamUtil2, dir);
 
+    fclose(fp2);
+    free(dir);
     free(strAux);
     free(stringDec);
     bitmapLibera(bitmapString);

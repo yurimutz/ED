@@ -7,15 +7,13 @@
 
 void leArquivo(unsigned int *vetFreq, FILE *fp){
 
-    unsigned int teste = 0;
     unsigned char aux;
     while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
         
         vetFreq[aux]++;
-        teste++;
         
     }
-    //printf("%d ", teste);
+
 }
 
 unsigned int descobreTamString(FILE *fp, unsigned char **dic, unsigned int altura){
@@ -25,12 +23,10 @@ unsigned int descobreTamString(FILE *fp, unsigned char **dic, unsigned int altur
     unsigned char aux;
     while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
         
-        //tam = tam + strlen(dic[aux]);
         tam = tam + altura;
         
     }
 
-    //+1 para o caractere '\0
     return tam + 1;
 
 }
@@ -41,30 +37,21 @@ unsigned char *codificaArquivo(unsigned char **dic, FILE *fp, unsigned int altur
 
     unsigned char *txtCodificado = calloc(descobreTamString(fp, dic, altura)+1, sizeof(char));
 
-    // fseek(fp, 0, SEEK_SET);
+    /*Implementado assim pois, anteriormente, usei strcat e deu poblema com arquivos grandes*/
 
-    // unsigned char aux;
-    // while(fread(&aux, sizeof(char), 1, fp) == 1){
-        
-    //     strcat(txtCodificado, dic[aux]);
-           
-    // }
-
-    // return txtCodificado;
-
-    //3. [A GRANDE MUDANÇA] Cria um ponteiro para a posição atual de escrita
+    //Cria um ponteiro para a posição atual de escrita
     unsigned char *ponteiro_atual = txtCodificado;
 
-    // 4. Segunda passada para codificar
+    //Segunda passada para codificar
     fseek(fp, 0, SEEK_SET);
     
     unsigned char aux;
     while(fread(&aux, sizeof(unsigned char), 1, fp) == 1){
-        // Pega o código de Huffman para o caractere lido
+
         unsigned char* codigo = dic[aux];
         int tam_codigo = strlen(codigo);
 
-        // 5. [A GRANDE MUDANÇA] Copia o código diretamente para a posição atual
+        //Copia o código diretamente para a posição atual
         memcpy(ponteiro_atual, codigo, tam_codigo);
         
         // 6. Avança o ponteiro para o final dos dados recém-copiados

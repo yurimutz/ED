@@ -155,12 +155,18 @@ void bitmapLibera (bitmap* bm){
     free (bm);
 }
 
-unsigned char lerByteInteiro(bitmap* bm, unsigned int indice_inicial) {
+unsigned char lerByteInteiro(bitmap* bm, unsigned int indice_inicial){
+
     assert((indice_inicial + 8) <= bitmapGetLength(bm), "Tentativa de ler alem dos limites do bitmap.");
+
     unsigned char byte_resultante = 0;
+
     for (int i = 0; i < 8; i++) {
+
         unsigned char bit = bitmapGetBit(bm, indice_inicial + i);
         byte_resultante = (byte_resultante << 1) | bit;
+
     }
+
     return byte_resultante;
 }

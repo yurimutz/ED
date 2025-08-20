@@ -7,12 +7,6 @@ struct arv {
     struct arv* dir;
 };
 
-Arv* abb_criaVazia (){
-
-    return NULL;
-
-}
-
 Arv* arv_cria (unsigned int frequencia, unsigned char carac){
 
     Arv* p=(Arv*)malloc(sizeof(Arv));
@@ -39,18 +33,6 @@ Arv* arvCriaNaoVazia(Arv *esq, Arv *dir){
     arv->dir = dir;
 
     return arv;
-
-}
-
-void abb_imprime (Arv* a){
-
-    if (a != NULL) {
-
-        printf("Carac:%c Freq: %d\n", a->carac, a->frequencia);
-        abb_imprime(a->esq);
-        abb_imprime(a->dir);
-
-    }
 
 }
 
@@ -105,8 +87,7 @@ unsigned int altura(Arv* a){
 
 void preencheDicionario(unsigned char **dic, Arv *a, unsigned char *conteudo, unsigned int altura){
 
-    //unsigned char esqAux[altura], dirAux[altura];
-
+    // Precisei fazer dinamico pois tava dando erro quando criei essas strings estaticas
     unsigned char *esqAux = malloc(altura * sizeof(unsigned char));
     unsigned char *dirAux = malloc(altura * sizeof(unsigned char));
 
@@ -134,70 +115,6 @@ void preencheDicionario(unsigned char **dic, Arv *a, unsigned char *conteudo, un
 
 }
 
-void criaStringArvore(Arv* a, unsigned char* conteudo){
-
-    Arv *aux = a;
-
-    unsigned char strAux[2];
-    unsigned char strAux2[3];
-    strAux[1] = '\0';
-    strAux2[2] = '\0';
-
-    if(a->dir == NULL && a->esq == NULL){
-
-        strAux2[1] = a->carac;
-        strAux2[0] = '1';
-        strcat(conteudo, strAux2);
-
-    } else {
-
-        strAux[0] = '0';
-        strcat(conteudo, strAux);
-
-        criaStringArvore(a->esq, conteudo);
-        criaStringArvore(a->dir, conteudo);        
-
-    }
-
-}
-
-unsigned char *decodificaFinal(Arv *a, unsigned char *txtCodificado, FILE *fp){
-
-    Arv *aux = a;
-
-    unsigned int tamDecodificado = 0;
-
-    unsigned char *decodificado = malloc(strlen(txtCodificado) * sizeof(unsigned char));
-
-    for(unsigned int i=0; txtCodificado[i] != '\0'; i++){
-
-        if(txtCodificado[i] == '0' ){
-
-            aux = aux->esq;
-
-        } else if(txtCodificado[i] == '1' ){
-
-            aux = aux->dir;
-
-        }
-
-        if(aux->dir == NULL && aux->esq == NULL){
-
-            decodificado[tamDecodificado] = aux->carac;
-            tamDecodificado++;
-
-            aux = a;
-
-        }
-
-    }
-
-    decodificado[tamDecodificado] = '\0';
-
-    return decodificado;
-
-}
-
 unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil, char *dir){
 
     Arv *aux = a;
@@ -221,7 +138,6 @@ unsigned char *decodificaFinal2(Arv *a, bitmap *bm, unsigned int tamUtil, char *
         if(aux->dir == NULL && aux->esq == NULL){
 
             decodificado[tamDecodificado] = aux->carac;
-            //printf("%c", aux->carac);
             tamDecodificado++;
 
             aux = a;
@@ -271,29 +187,23 @@ Arv *recriaArvore(bitmap *bm, unsigned int *tamAtual, unsigned int tamUtil){
 }
 
 unsigned int calculaTamanhoArvore(Arv* a) {
-    // Caso base: se o nó é nulo, seu tamanho é 0.
+   
     if (a == NULL) {
         return 0;
     }
 
-    // Verifica se é um nó folha (não tem filhos).
     if (a->esq == NULL && a->dir == NULL) {
         // Um nó folha é representado por: 1 bit (para o '1') + 8 bits (para o caractere).
         // Total de 9 bits.
         return 1 + 8;
     }
 
-    // Se não for folha, é um nó interno.
-    // Um nó interno é representado por: 1 bit (para o '0') 
-    // + o tamanho da sub-árvore esquerda 
-    // + o tamanho da sub-árvore direita.
     unsigned int tamanhoEsq = calculaTamanhoArvore(a->esq);
     unsigned int tamanhoDir = calculaTamanhoArvore(a->dir);
 
     return 1 + tamanhoEsq + tamanhoDir;
 }
 
-// Adicione esta nova função em arvore.c
 void criaStringArvore_Manual(Arv* a, unsigned char* buffer, unsigned int* indice) {
     if (a == NULL) {
         return;
@@ -306,6 +216,7 @@ void criaStringArvore_Manual(Arv* a, unsigned char* buffer, unsigned int* indice
         buffer[*indice] = a->carac; // Adiciona o byte do caractere diretamente
         (*indice)++;
     } 
+    
     // Se é um nó interno
     else {
         buffer[*indice] = '0';
