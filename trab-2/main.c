@@ -84,7 +84,6 @@ void compactaArquivo(unsigned char *codificado, char *dir){
 
     }
 
-    //FILE *fp = fopen("saida.txt", "ab");
     FILE *fp = fopen(dir, "ab");
 
     //tamanho util do dado compactado
