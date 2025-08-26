@@ -39,7 +39,7 @@ unsigned char *codificaArquivo(unsigned char **dic, FILE *fp, unsigned int altur
 
     /*Implementado assim pois, anteriormente, usei strcat e deu poblema com arquivos grandes*/
 
-    //Cria um ponteiro para a posição atual de escrita
+    //Cria um ponteiro para a posicao atual de escrita
     unsigned char *ponteiro_atual = txtCodificado;
 
     //Segunda passada para codificar
@@ -51,16 +51,14 @@ unsigned char *codificaArquivo(unsigned char **dic, FILE *fp, unsigned int altur
         unsigned char* codigo = dic[aux];
         int tam_codigo = strlen(codigo);
 
-        //Copia o código diretamente para a posição atual
+        //Copia o codigo diretamente para a posicao atual
         memcpy(ponteiro_atual, codigo, tam_codigo);
         
-        // 6. Avança o ponteiro para o final dos dados recém-copiados
+        // Avança o ponteiro para o final dos dados recem-copiados
         ponteiro_atual += tam_codigo;
     }
 
-    // O '\0' final já está garantido pelo uso do calloc
     return txtCodificado;
-
 
 }
 
@@ -70,7 +68,8 @@ void compactaArquivo(unsigned char *codificado, char *dir){
 
     unsigned int tamUtil = strlen(codificado);
 
-    unsigned tamTotal = tamUtil;
+    //torna multiplo de 8
+    unsigned int tamTotal = tamUtil;
     while(tamTotal % 8 != 0){
 
         tamTotal++;
@@ -124,9 +123,9 @@ int main(int argc, char *argv[]){
 
     unsigned int *vetFreq = calloc(256, sizeof(int));
 
-    //FILE *fp = fopen("entrada.txt", "r");
     FILE *fp = fopen(dir, "rb");
 
+    //preenche o vetor de frequencias
     leArquivo(vetFreq, fp);
 
     Lista *l = criaLista();

@@ -179,7 +179,6 @@ Arv *recriaArvore(bitmap *bm, unsigned int *tamAtual, unsigned int tamUtil){
         unsigned char carac = lerByteInteiro(bm, *tamAtual);
 
         (*tamAtual) = *(tamAtual) + 8;
-        //printf("%c ", carac);
         return arv_cria(0, carac);
 
     }
@@ -209,7 +208,7 @@ void criaStringArvore_Manual(Arv* a, unsigned char* buffer, unsigned int* indice
         return;
     }
 
-    // Se é um nó folha
+    // Encontrou folha
     if (a->esq == NULL && a->dir == NULL) {
         buffer[*indice] = '1';
         (*indice)++;
@@ -217,7 +216,6 @@ void criaStringArvore_Manual(Arv* a, unsigned char* buffer, unsigned int* indice
         (*indice)++;
     } 
     
-    // Se é um nó interno
     else {
         buffer[*indice] = '0';
         (*indice)++;

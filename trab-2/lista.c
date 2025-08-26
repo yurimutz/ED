@@ -201,6 +201,7 @@ void stringArvore(Lista *l, char *dir){
     // Implementado assim pois tive problemas em .txt (o '\0' era usado como caractere valido)
     criaStringArvore_Manual(l->inicio->arv, str, &indice_final);
 
+    // Necessario para descobrir o tamanho do bitmap
     unsigned int tamBitMap = 0;
     unsigned int i_calc = 0;
     while(i_calc < indice_final) {
@@ -231,17 +232,17 @@ void stringArvore(Lista *l, char *dir){
     while (i < indice_final) {
         if (str[i] == '0') {
             bitmapAppendLeastSignificantBit(bm, 0);
-            i++; // Avança 1 posição
+            i++; 
         } else if (str[i] == '1') {
             bitmapAppendLeastSignificantBit(bm, 1);
-            i++; // Avança para o byte do caractere
+            i++;
             
             // Adiciona os 8 bits do caractere
             for (int j = 7; j >= 0; j--) {
                 unsigned char bit = (str[i] >> j) & 1;
                 bitmapAppendLeastSignificantBit(bm, bit);
             }
-            i++; // Avança para depois do caractere
+            i++;
         }
     }
     

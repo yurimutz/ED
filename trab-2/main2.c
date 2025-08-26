@@ -5,7 +5,7 @@
 #include "bitmap.h"
 #include "lista.h"
 
-bitmap *funcaoTeste(unsigned int tamUtil, unsigned int tamTotal, unsigned char *conteudo){
+bitmap *criaBitmapDescompacta(unsigned int tamUtil, unsigned int tamTotal, unsigned char *conteudo){
 
     bitmap *bm = bitmapInit(tamTotal+1);
 
@@ -29,7 +29,6 @@ int main(int argc, char *argv[]){
     char *dir = malloc(1000 * sizeof(char));
     sprintf(dir, "%s", argv[1]);
 
-    //FILE *fp2 = fopen("saida.txt", "rb");
     FILE *fp2 = fopen(dir, "rb");
 
     if(fp2 == NULL){
@@ -39,6 +38,7 @@ int main(int argc, char *argv[]){
 
     }
 
+    //Le as informacoes do arquivo .comp
     unsigned int tamTotal=0, tamUtil=0;
 
     fread(&tamUtil, sizeof(unsigned int), 1, fp2);
@@ -57,13 +57,15 @@ int main(int argc, char *argv[]){
 
     fread(stringDec, sizeof(unsigned char), tamTotal2/8, fp2);
 
-    bitmap *bitmapArv = funcaoTeste(tamUtil, tamTotal, strAux);
+    //Cria bitmaps a partir das informacoes lidas
+    bitmap *bitmapArv = criaBitmapDescompacta(tamUtil, tamTotal, strAux);
 
-    bitmap *bitmapString = funcaoTeste(tamUtil2, tamTotal2, stringDec);
+    bitmap *bitmapString = criaBitmapDescompacta(tamUtil2, tamTotal2, stringDec);
 
     unsigned int indice = 0;
     Arv * arvNovo = recriaArvore(bitmapArv, &indice, tamUtil);
 
+    //Pequena gamb para tirar o .comp 
     size_t len = strlen(dir);
     const char *sufixo = ".comp";
     size_t len_sufixo = strlen(sufixo);
